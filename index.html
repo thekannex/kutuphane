@@ -4,117 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
-    
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('KitapMatik Hazır 🟢'))
-                .catch((err) => console.log('SW Hatası 🔴', err));
-        }
-    </script>
-
     <style>
-        /* --- RENK PALETİ --- */
-        :root { 
-            --primary: #4834d4; 
-            --accent: #0984e3; 
-            --success: #00b894; 
-            --danger: #d63031; 
-            --purple: #a55eea; 
-            --bg-color: #f5f7fa; 
-        }
-
+        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f5f7fa; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
-        .container { 
-            background: white; width: 100%; max-width: 800px; height: 100%; 
-            display: flex; flex-direction: column; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.08); position: relative;
-        }
-        
-        /* ÜST BAR */
-        .top-bar { 
-            background: linear-gradient(135deg, var(--primary), var(--purple)); 
-            color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 4px 15px rgba(72, 52, 212, 0.3); flex-shrink: 0; z-index: 10;
-        }
+        .container { background: white; width: 100%; max-width: 800px; height: 100%; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,0.08); position: relative; }
+        .top-bar { background: linear-gradient(135deg, var(--primary), var(--purple)); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(72, 52, 212, 0.3); flex-shrink: 0; z-index: 10; }
         .class-selector { font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        /* İÇERİK */
         .content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg-color); padding-bottom: 20px; }
         .view-section { padding: 12px; display: none; }
         .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* KONTROLLER */
         .controls { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding: 4px; align-items: center; scrollbar-width: none; }
         .controls::-webkit-scrollbar { display: none; }
         .date-picker { flex: 1; min-width: 120px; max-width: 150px; padding: 0 10px; border: 2px solid #eee; border-radius: 10px; height: 42px; font-weight: 600; background:white; }
-        
         button { padding: 0 14px; height: 42px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0; }
         button:active { transform: scale(0.97); }
-
-        .btn-blue { background: var(--accent); }
-        .btn-purple { background: var(--purple); }
-        .btn-gray { background: #95a5a6; }
-        .btn-green { background: var(--success); }
-        .btn-orange { background: #e67e22; }
-        .btn-red { background: var(--danger); }
-        
-        /* ÖZEL DOSYA BUTONU (GİZLİ INPUT İÇİN ETIKET) */
-        .file-upload-btn {
-            background: #6c5ce7; color: white; padding: 8px 15px; 
-            border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 5px;
-        }
-
-        /* TABLO */
+        .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: #e67e22; } .btn-red { background: var(--danger); }
+        .file-upload-btn { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 5px; }
         .card { background: white; border-radius: 16px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { text-align: left; color: #a4b0be; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 15px; background: #fff; border-bottom: 2px solid #f1f2f6; }
         td { padding: 15px; border-bottom: 1px solid #f7f9fa; vertical-align: middle; }
-        
-        tr.blocked-row td { background: #fff0f0; color: var(--danger); }
-        tr.banned-row td { background: #ffebeb; color: #c0392b; font-weight: bold; border-left: 6px solid var(--danger); }
-
-        /* SWITCH */
+        tr.blocked-row td { background: #fff0f0; color: var(--danger); } tr.banned-row td { background: #ffebeb; color: #c0392b; font-weight: bold; border-left: 6px solid var(--danger); }
         .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dfe6e9; transition: .3s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        input:checked + .slider { background-color: var(--success); } input:checked + .slider:before { transform: translateX(18px); }
         .badge-new { font-size: 10px; background: rgba(0, 184, 148, 0.1); color: var(--success); padding: 2px 6px; border-radius: 6px; font-weight: 700; margin-left: 5px; }
-
-        /* NAVİGASYON */
         .nav-bar { background: white; padding: 10px 0; display: flex; justify-content: space-around; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding-bottom: env(safe-area-inset-bottom); }
         .nav-btn { background: none; border: none; color: #b2bec3; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
-        .nav-btn.active { color: var(--primary); transform: translateY(-2px); }
-        .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
-
-        /* MODALS */
+        .nav-btn.active { color: var(--primary); transform: translateY(-2px); } .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.7); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
         .modal { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .input-full { width: 100%; padding: 12px; margin: 8px 0 20px 0; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 15px; }
         textarea { height: 120px; font-family: monospace; line-height: 1.5; resize: vertical; width: 100%; border: 2px solid #eee; border-radius: 12px; padding:10px; }
-        
         .class-item { padding: 15px; background: #f7f9fa; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 12px; margin-bottom: 8px; font-weight: 600; }
         .class-item.active { background: rgba(0, 184, 148, 0.1); color: var(--success); }
         .book-chip { display:inline-block; padding:8px 12px; margin:4px; background:white; border:2px solid #eee; border-radius: 20px; font-size: 12px; color: var(--primary); font-weight: 600; }
+
+        /* GÜNCELLEME UYARISI STİLİ */
+        #updateNotification {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: #2d3436; color: white; padding: 12px 20px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000;
+            display: none; align-items: center; gap: 15px; animation: slideUpToast 0.5s;
+        }
+        #updateNotification span { font-size: 13px; font-weight: 600; }
+        #updateNotification button {
+            background: var(--success); color: white; border: none; padding: 5px 15px;
+            border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; height: 30px;
+        }
+        @keyframes slideUpToast { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
         @media (min-width: 600px) { .container { margin: 30px auto; height: 90vh; border-radius: 24px; } .view-section { padding: 25px; } }
     </style>
 </head>
 <body>
+
+<div id="updateNotification">
+    <span>🚀 Yeni özellikler geldi!</span>
+    <button onclick="updateApp()">YÜKLE</button>
+</div>
 
 <div class="container">
     <div class="top-bar">
@@ -132,48 +93,23 @@
                 <button class="btn-purple" onclick="runSystemCheck()">🩺 Doktor</button>
                 <button class="btn-gray" onclick="openSettings()">⚙️ Ayar</button>
             </div>
-
             <div class="card">
                 <table>
                     <thead>
                         <tr>
                             <th>Öğrenci / Kitap</th>
-                            <th style="width:55px; text-align:center;">
-                                <div style="display:flex; flex-direction:column; align-items:center;">
-                                    <span style="font-size:9px; margin-bottom:4px; color:var(--accent);">TÜMÜ</span>
-                                    <label class="switch" style="transform: scale(0.9);">
-                                        <input type="checkbox" id="masterSwitch" onchange="toggleAll(this.checked)">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </th>
+                            <th style="width:55px; text-align:center;"><div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:9px; margin-bottom:4px; color:var(--accent);">TÜMÜ</span><label class="switch" style="transform: scale(0.9);"><input type="checkbox" id="masterSwitch" onchange="toggleAll(this.checked)"><span class="slider round"></span></label></div></th>
                             <th style="width:70px; text-align:right;">İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
-            
-            <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;">
-                <div style="font-size:50px; margin-bottom:15px;">📊</div>
-                <h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3>
-                <p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p>
-                <button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button>
-            </div>
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px;">KitapMatik v32 (Excel)</div>
+            <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px;">KitapMatik v33 (AutoUpdate)</div>
         </div>
-
-        <div id="view-report" class="view-section">
-            <input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;">
-            <div class="card">
-                <table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table>
-            </div>
-        </div>
-
-        <div id="view-inventory" class="view-section">
-            <h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3>
-            <div id="freeBooksList"></div>
-        </div>
+        <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
+        <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
     </div>
 
     <div class="nav-bar">
@@ -183,62 +119,45 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="classModal">
-    <div class="modal">
-        <h2 style="color:var(--primary)">🏫 Sınıflarım</h2>
-        <div id="classList" style="max-height:250px; overflow-y:auto; margin-bottom:20px;"></div>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="newClassInput" class="input-full" placeholder="Yeni Sınıf Adı..." style="margin:0;">
-            <button class="btn-green" onclick="createNewClass()" style="height:auto;">EKLE</button>
-        </div>
-        <button class="btn-gray" style="width:100%; margin-top:15px; padding:12px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">Kapat</button>
-    </div>
-</div>
-
-<div class="modal-overlay" id="settingsModal">
-    <div class="modal">
-        <h2 style="color:var(--primary)">⚙️ Ayarlar</h2>
-        
-        <label style="font-weight:700; color:var(--primary);">🏷️ Sınıf Adı:</label>
-        <input type="text" id="classNameInput" class="input-full" placeholder="Örn: 5-A Sınıfı" style="font-weight:800; color:var(--primary); font-size:18px;">
-        
-        <label style="font-weight:600;">🚫 Ceza Limiti (Hafta):</label>
-        <input type="number" id="strikeLimitInput" class="input-full" value="2">
-        
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label style="font-weight:600;">👥 Öğrenci Listesi:</label>
-            <label class="file-upload-btn">
-                📂 Excel'den Yükle
-                <input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'studentInput')">
-            </label>
-        </div>
-        <textarea id="studentInput" placeholder="Ahmet Yılmaz&#10;Ayşe Demir..."></textarea>
-        
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-            <label style="font-weight:600;">📚 Kitap Listesi:</label>
-            <label class="file-upload-btn" style="background:#00b894;">
-                📂 Excel'den Yükle
-                <input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'bookInput')">
-            </label>
-        </div>
-        <textarea id="bookInput" placeholder="Küçük Prens&#10;Şeker Portakalı..."></textarea>
-        
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn-blue" style="flex:1; justify-content:center; height:50px;" onclick="saveSettings()">KAYDET</button>
-            <button class="btn-gray" style="flex:1; justify-content:center; height:50px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">İPTAL</button>
-        </div>
-        <hr style="margin:25px 0; border:0; border-top:2px solid #eee;">
-        <h3 style="color:var(--primary)">💾 Veri Yedekleme</h3>
-        <button class="btn-green" style="width:100%; margin-bottom:10px; justify-content:center; height:45px;" onclick="downloadBackup()">⬇️ Yedeği İndir</button>
-        <button class="btn-orange" style="width:100%; justify-content:center; height:45px;" onclick="document.getElementById('restoreInput').click()">⬆️ Yedeği Geri Yükle</button>
-        <input type="file" id="restoreInput" style="display:none;" onchange="restoreBackup(this)">
-        <div style="margin-top:25px; text-align:center;">
-            <button class="btn-red" style="font-size:12px; padding: 0 20px; height:36px; background:#ff7675;" onclick="deleteCurrentClass()">⚠️ Bu Sınıfı Sil</button>
-        </div>
-    </div>
-</div>
+<div class="modal-overlay" id="classModal"><div class="modal"><h2 style="color:var(--primary)">🏫 Sınıflarım</h2><div id="classList" style="max-height:250px; overflow-y:auto; margin-bottom:20px;"></div><div style="display:flex; gap:10px;"><input type="text" id="newClassInput" class="input-full" placeholder="Yeni Sınıf Adı..." style="margin:0;"><button class="btn-green" onclick="createNewClass()" style="height:auto;">EKLE</button></div><button class="btn-gray" style="width:100%; margin-top:15px; padding:12px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">Kapat</button></div></div>
+<div class="modal-overlay" id="settingsModal"><div class="modal"><h2 style="color:var(--primary)">⚙️ Ayarlar</h2><label style="font-weight:700; color:var(--primary);">🏷️ Sınıf Adı:</label><input type="text" id="classNameInput" class="input-full" placeholder="Örn: 5-A Sınıfı" style="font-weight:800; color:var(--primary); font-size:18px;"><label style="font-weight:600;">🚫 Ceza Limiti (Hafta):</label><input type="number" id="strikeLimitInput" class="input-full" value="2"><div style="display:flex; justify-content:space-between; align-items:center;"><label style="font-weight:600;">👥 Öğrenci Listesi:</label><label class="file-upload-btn">📂 Excel'den Yükle<input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'studentInput')"></label></div><textarea id="studentInput" placeholder="Ahmet Yılmaz&#10;Ayşe Demir..."></textarea><div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;"><label style="font-weight:600;">📚 Kitap Listesi:</label><label class="file-upload-btn" style="background:#00b894;">📂 Excel'den Yükle<input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'bookInput')"></label></div><textarea id="bookInput" placeholder="Küçük Prens&#10;Şeker Portakalı..."></textarea><div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-blue" style="flex:1; justify-content:center; height:50px;" onclick="saveSettings()">KAYDET</button><button class="btn-gray" style="flex:1; justify-content:center; height:50px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">İPTAL</button></div><hr style="margin:25px 0; border:0; border-top:2px solid #eee;"><h3 style="color:var(--primary)">💾 Veri Yedekleme</h3><button class="btn-green" style="width:100%; margin-bottom:10px; justify-content:center; height:45px;" onclick="downloadBackup()">⬇️ Yedeği İndir</button><button class="btn-orange" style="width:100%; justify-content:center; height:45px;" onclick="document.getElementById('restoreInput').click()">⬆️ Yedeği Geri Yükle</button><input type="file" id="restoreInput" style="display:none;" onchange="restoreBackup(this)"><div style="margin-top:25px; text-align:center;"><button class="btn-red" style="font-size:12px; padding: 0 20px; height:36px; background:#ff7675;" onclick="deleteCurrentClass()">⚠️ Bu Sınıfı Sil</button></div></div></div>
 
 <script>
+    // --- OTO GÜNCELLEME SİSTEMİ ---
+    let newWorker;
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(reg => {
+            reg.addEventListener('updatefound', () => {
+                newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // Yeni güncelleme bulundu!
+                        document.getElementById('updateNotification').style.display = 'flex';
+                    }
+                });
+            });
+        });
+        
+        // Zaten bekleyen bir güncelleme varsa göster
+        navigator.serviceWorker.ready.then(reg => {
+           if(reg.waiting) document.getElementById('updateNotification').style.display = 'flex';
+        });
+    }
+
+    function updateApp() {
+        if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
+        else if(navigator.serviceWorker.controller) {
+             // Çok nadir durum: worker kaybolduysa direkt reload
+             window.location.reload();
+        }
+    }
+
+    // Güncelleme tamamlanınca sayfayı yenile
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+    });
+
+    // --- MEVCUT UYGULAMA KODLARI ---
     let appData = null;
     let currentClassId = null;
     let classes = [];
@@ -247,10 +166,7 @@
         loadClasses();
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('tr-TR');
         document.getElementById('simulationDate').valueAsDate = new Date();
-
-        document.getElementById('newClassInput').addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') createNewClass();
-        });
+        document.getElementById('newClassInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') createNewClass(); });
 
         if (classes.length === 0) {
             const defId = 'cls_' + Date.now();
@@ -258,42 +174,26 @@
             saveClasses();
             localStorage.setItem('km_data_' + defId, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 2 } }));
             loadClass(defId);
-            setTimeout(() => { alert("Hoşgeldiniz! Ayarlardan Excel ile liste yükleyebilirsiniz."); openSettings(); }, 500);
+            setTimeout(() => { alert("Hoşgeldiniz! Listeleri Excel'den yükleyebilirsiniz."); openSettings(); }, 500);
         } else {
             const lastId = localStorage.getItem('last_active_class');
-            if(lastId && classes.find(c=>c.id===lastId)) loadClass(lastId);
-            else loadClass(classes[0].id);
+            if(lastId && classes.find(c=>c.id===lastId)) loadClass(lastId); else loadClass(classes[0].id);
         }
     });
 
-    // --- EXCEL OKUMA FONKSİYONU ---
     function importExcel(input, targetId) {
-        const file = input.files[0];
-        if(!file) return;
-
+        const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, {type: 'array'});
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                
-                // İlk sütunu (A sütunu) al
                 const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
-                
-                // Verileri düzleştir ve string'e çevir
                 const list = jsonData.map(row => row[0]).filter(item => item && typeof item === 'string').join('\n');
-                
-                if(list.length > 0) {
-                    document.getElementById(targetId).value = list;
-                    alert("Excel'den başarıyla okundu! Kaydetmeyi unutmayın.");
-                } else {
-                    alert("Excel dosyasının A sütununda uygun veri bulunamadı.");
-                }
-            } catch(err) {
-                alert("Excel okuma hatası! Dosya bozuk olabilir.");
-                console.error(err);
-            }
+                if(list.length > 0) { document.getElementById(targetId).value = list; alert("Excel okundu!"); } 
+                else { alert("A sütununda veri bulunamadı."); }
+            } catch(err) { alert("Hata! Dosya bozuk."); }
         };
         reader.readAsArrayBuffer(file);
     }
@@ -301,7 +201,6 @@
     function getSystemDate() { return document.getElementById('simulationDate').valueAsDate?.toLocaleDateString('tr-TR') || new Date().toLocaleDateString('tr-TR'); }
     function loadClasses() { const d = localStorage.getItem('km_classes'); classes = d ? JSON.parse(d) : []; }
     function saveClasses() { localStorage.setItem('km_classes', JSON.stringify(classes)); }
-
     function createNewClass() {
         const name = document.getElementById('newClassInput').value.trim();
         if (name) {
@@ -309,69 +208,45 @@
             classes.push({ id: id, name: name });
             saveClasses();
             localStorage.setItem('km_data_' + id, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 2 } }));
-            document.getElementById('newClassInput').value = '';
-            closeModals();
-            loadClass(id);
-            setTimeout(() => openSettings(), 300);
+            document.getElementById('newClassInput').value = ''; closeModals(); loadClass(id); setTimeout(() => openSettings(), 300);
         } else alert("Sınıf adı yazın.");
     }
-
     function loadClass(id) {
-        currentClassId = id;
-        localStorage.setItem('last_active_class', id);
-        const cls = classes.find(c => c.id === id);
-        if(cls) document.getElementById('headerClassName').innerText = cls.name;
-        const raw = localStorage.getItem('km_data_' + id);
-        appData = raw ? JSON.parse(raw) : { students: [], books: [], settings: { maxStrikes: 2 } };
-        renderTable();
-        closeModals();
+        currentClassId = id; localStorage.setItem('last_active_class', id);
+        const cls = classes.find(c => c.id === id); if(cls) document.getElementById('headerClassName').innerText = cls.name;
+        const raw = localStorage.getItem('km_data_' + id); appData = raw ? JSON.parse(raw) : { students: [], books: [], settings: { maxStrikes: 2 } };
+        renderTable(); closeModals();
     }
     function saveData() { if (currentClassId && appData) localStorage.setItem('km_data_' + currentClassId, JSON.stringify(appData)); }
-
     function switchView(viewId, btn) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.getElementById('view-' + viewId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
         btn.classList.add('active');
-        if(viewId === 'report') renderReport();
-        if(viewId === 'inventory') renderInventory();
+        if(viewId === 'report') renderReport(); if(viewId === 'inventory') renderInventory();
     }
-
     function renderTable() {
-        const tbody = document.getElementById('tableBody');
-        const emptyState = document.getElementById('emptyState');
-        const card = document.querySelector('#view-dashboard .card');
+        const tbody = document.getElementById('tableBody'); const emptyState = document.getElementById('emptyState'); const card = document.querySelector('#view-dashboard .card');
         tbody.innerHTML = '';
-        if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } 
-        else { card.style.display = 'block'; emptyState.style.display = 'none'; }
-
-        let allChecked = true;
-        const d = getSystemDate();
+        if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } else { card.style.display = 'block'; emptyState.style.display = 'none'; }
+        let allChecked = true; const d = getSystemDate();
         appData.students.forEach(s => {
             if (!s.delivered) allChecked = false;
             const bName = s.bookId ? (appData.books.find(b=>b.id===s.bookId)?.name || 'Bilinmeyen') : 'Kitap Yok';
             const isBan = s.isBanned, isDel = s.delivered;
             let trClass = ''; if (isBan) trClass = 'banned-row'; else if (s.blocked && !isBan && !isDel) trClass = 'blocked-row';
-            const btnText = isBan ? 'AF' : 'Değiş';
-            const btnColor = isBan ? 'btn-red' : (isDel ? 'btn-blue' : 'btn-gray');
+            const btnText = isBan ? 'AF' : 'Değiş'; const btnColor = isBan ? 'btn-red' : (isDel ? 'btn-blue' : 'btn-gray');
             const btnAction = (isDel || isBan) ? `onclick="manualChange(${s.id})"` : '';
             const isToday = s.lastDate === d;
             const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:15px;">${s.name}</div><div style="font-size:13px; color:#666; margin-top:4px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:11px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 12px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
             tbody.innerHTML += row;
         });
-        const master = document.getElementById('masterSwitch');
-        if(master) master.checked = (appData.students.length > 0 && allChecked);
+        const master = document.getElementById('masterSwitch'); if(master) master.checked = (appData.students.length > 0 && allChecked);
     }
-
-    function toggleAll(status) {
-        if(confirm(status ? "Tüm öğrencileri 'TESLİM ETTİ' olarak işaretle?" : "Tüm işaretleri kaldır?")) { appData.students.forEach(s => { s.delivered = status; if(status) s.blocked = false; }); saveData(); renderTable(); } 
-        else { document.getElementById('masterSwitch').checked = !status; }
-    }
+    function toggleAll(status) { if(confirm(status ? "Tümü 'TESLİM ETTİ' olsun mu?" : "İşaretler kaldırılsın mı?")) { appData.students.forEach(s => { s.delivered = status; if(status) s.blocked = false; }); saveData(); renderTable(); } else { document.getElementById('masterSwitch').checked = !status; } }
     function toggleOne(id, status) { const s = appData.students.find(x => x.id === id); if(s) { s.delivered = status; if(status) s.blocked = false; saveData(); renderTable(); } }
-
     function nextRotation() {
-        const d = getSystemDate();
-        if(!confirm(`Seçili Tarih: ${d}\nHaftalık dağıtım yapılsın mı?`)) return;
+        const d = getSystemDate(); if(!confirm(`Tarih: ${d}\nHaftalık dağıtım yapılsın mı?`)) return;
         const count = appData.books.length, limit = parseInt(appData.settings.maxStrikes);
         appData.students.forEach(s => {
             if(s.isBanned) return;
@@ -381,8 +256,7 @@
                 s.bookId = nextId; s.delivered = false; s.blocked = false; s.missCount = 0; s.lastDate = d;
                 const b = appData.books.find(x => x.id === nextId); if(!s.history) s.history = []; s.history.push({ date: d, book: b ? b.name : '?', bookId: nextId });
             } else { s.blocked = true; s.missCount = (s.missCount || 0) + 1; if(s.missCount >= limit) s.isBanned = true; }
-        });
-        saveData(); renderTable();
+        }); saveData(); renderTable();
     }
     function manualChange(id) {
         const s = appData.students.find(x => x.id === id); if(s.isBanned && !confirm("Cezayı kaldırıp kitap verilsin mi?")) return;
@@ -392,7 +266,6 @@
         const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.isBanned = false; s.missCount = 0; s.lastDate = d;
         const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (M)', book: b ? b.name : '?', bookId: found }); saveData(); renderTable();
     }
-    
     function openClassManager() {
         const list = document.getElementById('classList'); list.innerHTML = '';
         classes.forEach(c => { const div = document.createElement('div'); div.className = 'class-item ' + (c.id === currentClassId ? 'active' : ''); div.innerHTML = `<span>${c.name}</span> ${c.id === currentClassId ? '✔' : ''}`; div.onclick = () => loadClass(c.id); list.appendChild(div); });
@@ -406,13 +279,11 @@
         document.getElementById('bookInput').value = appData.books.map(b => b.name).join('\n');
     }
     function saveSettings() {
-        const newName = document.getElementById('classNameInput').value.trim();
-        const sRaw = document.getElementById('studentInput').value.trim();
-        const bRaw = document.getElementById('bookInput').value.trim();
-        if(!newName || !sRaw || !bRaw) return alert("Tüm alanları doldurun!");
+        const newName = document.getElementById('classNameInput').value.trim(); const sRaw = document.getElementById('studentInput').value.trim(); const bRaw = document.getElementById('bookInput').value.trim();
+        if(!newName || !sRaw || !bRaw) return alert("Alanlar boş olamaz!");
         const cls = classes.find(c => c.id === currentClassId); if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; }
         appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value;
-        if(appData.students.length === 0 || confirm("Liste güncellensin mi? (Eski veriler korunur)")) {
+        if(appData.students.length === 0 || confirm("Liste güncellensin mi? (Mevcut veriler korunur)")) {
              const lines = sRaw.split('\n').filter(x=>x.trim());
              const newStudents = lines.map((n, i) => { const existing = appData.students.find(s => s.name === n.trim()); if(existing) return existing; return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] }; });
              appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 }));
@@ -420,11 +291,11 @@
         }
         saveData(); renderTable(); closeModals();
     }
-    function deleteCurrentClass() { if(confirm("DİKKAT: Bu sınıf silinecek!")) { classes = classes.filter(c => c.id !== currentClassId); saveClasses(); localStorage.removeItem('km_data_' + currentClassId); location.reload(); } }
+    function deleteCurrentClass() { if(confirm("Sınıf silinecek!")) { classes = classes.filter(c => c.id !== currentClassId); saveClasses(); localStorage.removeItem('km_data_' + currentClassId); location.reload(); } }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(e => e.style.display = 'none'); }
     function downloadBackup() { const d = {}; for(let i=0; i<localStorage.length; i++) { const k = localStorage.key(i); if(k.startsWith('km_')) d[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:"application/json"})); a.download = "kitapmatik_yedek.json"; a.click(); }
     function restoreBackup(input) { const f = input.files[0]; if(!f) return; const r = new FileReader(); r.onload = e => { try { const d = JSON.parse(e.target.result); if(confirm("Yedek yüklensin mi?")) { Object.keys(d).forEach(k => localStorage.setItem(k, d[k])); location.reload(); } } catch(err) { alert("Hatalı Dosya!"); } }; r.readAsText(f); }
-    function runSystemCheck() { let errs = []; let assigned = {}; appData.students.forEach(s => { if(s.bookId && !s.delivered) { if(assigned[s.bookId]) errs.push(`Çakışma: Kitap #${s.bookId}`); else assigned[s.bookId] = s.name; } }); if(errs.length > 0 && confirm("Çakışmalar bulundu. Düzeltilsin mi?")) { let seen = {}; appData.students.forEach(s => { if(s.bookId && !s.delivered) { if(seen[s.bookId]) { s.bookId = null; s.delivered = false; } else seen[s.bookId] = true; } }); saveData(); renderTable(); alert("Düzeltildi."); } else if(errs.length === 0) alert("Sistem Sağlıklı ✅"); }
+    function runSystemCheck() { let errs = []; let assigned = {}; appData.students.forEach(s => { if(s.bookId && !s.delivered) { if(assigned[s.bookId]) errs.push(`Çakışma: Kitap #${s.bookId}`); else assigned[s.bookId] = s.name; } }); if(errs.length > 0 && confirm("Düzeltilsin mi?")) { let seen = {}; appData.students.forEach(s => { if(s.bookId && !s.delivered) { if(seen[s.bookId]) { s.bookId = null; s.delivered = false; } else seen[s.bookId] = true; } }); saveData(); renderTable(); alert("Düzeltildi."); } else if(errs.length === 0) alert("Sorun Yok ✅"); }
     function renderReport() { const t = document.getElementById('reportBody'); t.innerHTML = ''; let hist = []; appData.students.forEach(s => { if(s.history) s.history.forEach(h => hist.push({...h, st: s.name})); }); hist.sort((a,b) => new Date(b.date) - new Date(a.date)); hist.forEach(h => { t.innerHTML += `<tr><td style="font-size:13px; color:var(--primary); font-weight:600;">${h.date}</td><td><b>${h.st}</b><br><small style="color:#666;">${h.book}</small></td></tr>`; }); }
     function filterReport() { const v = document.getElementById('searchInput').value.toUpperCase(); const r = document.getElementById('reportBody').getElementsByTagName('tr'); for(let i=0; i<r.length; i++) r[i].style.display = r[i].innerText.toUpperCase().includes(v) ? '' : 'none'; }
     function renderInventory() { const l = document.getElementById('freeBooksList'); l.innerHTML = ''; appData.books.forEach(b => { const isBusy = appData.students.some(s => s.bookId === b.id); if(!isBusy) l.innerHTML += `<div class="book-chip">#${b.id} ${b.name}</div>`; }); }
