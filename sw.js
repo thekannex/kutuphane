@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitapmatik-v33-autoupdate'; // Versiyon adını değiştirdim
+const CACHE_NAME = 'kitapmatik-v34-test'; // VERSİYON DEĞİŞTİ (v34)
 const ASSETS = [
   './',
   './index.html',
@@ -8,7 +8,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
-  self.skipWaiting(); // Beklemeden yükle
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
@@ -20,7 +20,7 @@ self.addEventListener('activate', (e) => {
       return Promise.all(
         keyList.map((key) => {
           if (key !== CACHE_NAME) {
-            return caches.delete(key); // Eski sürümleri sil
+            return caches.delete(key);
           }
         })
       );
@@ -30,8 +30,6 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // "Ağ Öncelikli" Strateji (Önce internete bak, yoksa önbellekten aç)
-  // Bu sayede internet varsa hep en günceli görürsün.
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request).catch(() => caches.match(e.request))
@@ -43,7 +41,6 @@ self.addEventListener('fetch', (e) => {
   }
 });
 
-// Güncelleme Tetikleyicisi
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
