@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
-    <meta name="theme-color" content="#2c3e50">
+    <meta name="theme-color" content="#4834d4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -21,9 +21,19 @@
     </script>
 
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --danger: #c0392b; --light: #f8f9fa; --purple: #8e44ad; }
+        /* --- YENİ CANLI RENK PALETİ (v31) --- */
+        :root { 
+            --primary: #4834d4; /* Canlı İndigo */
+            --accent: #0984e3;  /* Parlak Mavi */
+            --success: #00b894; /* Nane Yeşili */
+            --danger: #d63031;  /* Parlak Kırmızı */
+            --purple: #a55eea;  /* Açık Mor */
+            --light: #dfe6e9;
+            --bg-color: #f5f7fa; /* Daha aydınlık arka plan */
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #eaeff2; margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
         /* ANA KAPLAYICI */
         .container { 
@@ -33,109 +43,102 @@
             height: 100%; 
             display: flex; 
             flex-direction: column; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.05); 
+            box-shadow: 0 0 40px rgba(0,0,0,0.08); /* Gölgeler biraz daha belirgin */
             position: relative;
         }
         
         /* 1. ÜST BAR */
         .top-bar { 
             background: var(--primary); 
+            background: linear-gradient(135deg, var(--primary), var(--purple)); /* Gradyan geçiş eklendi */
             color: white; 
             padding: 12px 15px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 15px rgba(72, 52, 212, 0.3); /* Renkli gölge */
             flex-shrink: 0; z-index: 10;
         }
-        .class-selector { font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; transition: 0.2s; }
-        .class-selector:active { background: rgba(255,255,255,0.3); }
+        .class-selector { font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; transition: 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .class-selector:active { background: rgba(255,255,255,0.3); transform: scale(0.98); }
         
         /* 2. İÇERİK ALANI */
         .content-area { 
             flex: 1; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch; 
-            background: #f4f6f8; 
+            background: var(--bg-color); 
             padding-bottom: 20px;
         }
-        .view-section { padding: 10px; display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.25s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section { padding: 12px; display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 3. KONTROL ÇUBUĞU */
-        .controls { 
-            display: flex; 
-            gap: 8px; 
-            margin-bottom: 10px; 
-            overflow-x: auto; 
-            padding: 2px 5px; 
-            align-items: center; 
-            scrollbar-width: none;
-        }
+        /* 3. KONTROLLER */
+        .controls { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding: 4px; align-items: center; scrollbar-width: none; }
         .controls::-webkit-scrollbar { display: none; }
 
-        .date-picker { 
-            flex: 1; min-width: 110px; max-width: 140px; 
-            padding: 0 8px; border: 1px solid #ddd; border-radius: 8px; 
-            font-family: inherit; color: #555; background: white; height: 38px; font-size: 13px;
-        }
-        button { 
-            padding: 0 12px; height: 38px; border: none; border-radius: 8px; 
-            font-weight: 600; font-size: 13px; color: white; cursor: pointer; 
-            display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; 
-        }
-        button:active { transform: scale(0.96); }
+        .date-picker { flex: 1; min-width: 120px; max-width: 150px; padding: 0 10px; border: 2px solid #eee; border-radius: 10px; font-family: inherit; color: var(--primary); background: white; height: 42px; font-size: 13px; font-weight: 600; }
+        .date-picker:focus { border-color: var(--accent); outline: none; }
+
+        button { padding: 0 14px; height: 42px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0; transition: transform 0.1s, box-shadow 0.1s; }
+        button:active { transform: scale(0.97); box-shadow: 0 2px 3px rgba(0,0,0,0.1); }
 
         .btn-blue { background: var(--accent); }
         .btn-purple { background: var(--purple); }
-        .btn-gray { background: #7f8c8d; }
+        .btn-gray { background: #95a5a6; color: white; }
         .btn-green { background: var(--success); }
         .btn-orange { background: #e67e22; }
         .btn-red { background: var(--danger); }
 
         /* TABLO & KART */
-        .card { background: white; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .card { background: white; border-radius: 16px; margin-bottom: 15px; border: none; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; color: #95a5a6; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 10px; background: #fafafa; border-bottom: 1px solid #eee; vertical-align: middle; }
-        td { padding: 10px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
+        th { text-align: left; color: #a4b0be; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 15px; background: #fff; border-bottom: 2px solid #f1f2f6; vertical-align: middle; }
+        td { padding: 15px; border-bottom: 1px solid #f7f9fa; vertical-align: middle; }
         
-        tr.blocked-row td { background: #fff8f8; color: #c0392b; }
-        tr.banned-row td { background: #fadbd8; color: #78281f; font-weight: bold; border-left: 4px solid #c0392b; }
+        tr.blocked-row td { background: #fff0f0; color: var(--danger); }
+        tr.banned-row td { background: #ffebeb; color: #c0392b; font-weight: bold; border-left: 6px solid var(--danger); }
 
-        .switch { position: relative; display: inline-block; width: 38px; height: 22px; }
+        /* SWITCH */
+        .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ddd; transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: #27ae60; }
-        input:checked + .slider:before { transform: translateX(16px); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dfe6e9; transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(18px); }
         
-        .badge-new { font-size: 9px; background: #e8f8f5; color: #27ae60; padding: 1px 5px; border-radius: 4px; border: 1px solid #27ae60; margin-left: 4px; display: inline-block; vertical-align: middle; }
+        .badge-new { font-size: 10px; background: rgba(0, 184, 148, 0.1); color: var(--success); padding: 2px 6px; border-radius: 6px; font-weight: 700; margin-left: 5px; display: inline-block; vertical-align: middle; }
 
         /* 3. ALT NAVİGASYON */
         .nav-bar { 
-            background: white; border-top: 1px solid #eee; padding: 8px 0; 
+            background: white; border-top: none; padding: 10px 0; 
             display: flex; justify-content: space-around; flex-shrink: 0; 
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-btn { background: none; border: none; color: #bdc3c7; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; flex: 1; }
-        .nav-btn svg { width: 22px; height: 22px; fill: currentColor; }
-        .nav-btn.active { color: var(--accent); }
+        .nav-btn { background: none; border: none; color: #b2bec3; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; transition: 0.2s; }
+        .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-btn.active { color: var(--primary); transform: translateY(-2px); }
 
         /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(2px); }
-        .modal { background: white; padding: 20px; border-radius: 16px; width: 85%; max-width: 400px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .input-full { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 2px solid #eee; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
-        textarea { height: 100px; font-family: monospace; line-height: 1.4; resize: vertical; width: 100%; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.7); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
+        .modal { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        .class-item { padding: 12px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 6px; margin-bottom: 4px; }
-        .class-item.active { background: #e8f6f3; color: var(--success); font-weight: bold; }
+        .input-full { width: 100%; padding: 12px; margin: 8px 0 20px 0; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 15px; transition: 0.2s; }
+        .input-full:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1); }
+        textarea { height: 120px; font-family: monospace; line-height: 1.5; resize: vertical; width: 100%; }
         
-        .book-chip { display:inline-block; padding:6px 10px; margin:3px; background:white; border:1px solid #ddd; border-radius:15px; font-size: 11px; color:#555; }
+        .class-item { padding: 15px; border: 2px solid transparent; background: #f7f9fa; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 12px; margin-bottom: 8px; font-weight: 600; transition: 0.2s; }
+        .class-item:hover { background: #eee; }
+        .class-item.active { background: rgba(0, 184, 148, 0.1); color: var(--success); border-color: var(--success); }
+        
+        .book-chip { display:inline-block; padding:8px 12px; margin:4px; background:white; border:2px solid #eee; border-radius: 20px; font-size: 12px; color: var(--primary); font-weight: 600; }
 
         @media (min-width: 600px) {
-            .container { margin: 20px auto; height: 95vh; border-radius: 16px; overflow: hidden; border: 1px solid #eee; }
-            .view-section { padding: 20px; }
+            .container { margin: 30px auto; height: 90vh; border-radius: 24px; border: none; }
+            .view-section { padding: 25px; }
         }
     </style>
 </head>
@@ -146,7 +149,7 @@
         <div class="class-selector" onclick="openClassManager()">
             <span id="headerClassName">Yükleniyor...</span> ▼
         </div>
-        <div style="font-size:11px; opacity:0.9;" id="dateDisplay"></div>
+        <div style="font-size:12px; opacity:0.9; font-weight:600;" id="dateDisplay"></div>
     </div>
 
     <div class="content-area">
@@ -164,34 +167,34 @@
                     <thead>
                         <tr>
                             <th>Öğrenci / Kitap</th>
-                            <th style="width:50px; text-align:center;">
+                            <th style="width:55px; text-align:center; padding:5px;">
                                 <div style="display:flex; flex-direction:column; align-items:center;">
-                                    <span style="font-size:8px; margin-bottom:2px;">TÜMÜ</span>
-                                    <label class="switch" style="transform: scale(0.8);">
+                                    <span style="font-size:9px; margin-bottom:4px; color:var(--accent);">TÜMÜ</span>
+                                    <label class="switch" style="transform: scale(0.9);">
                                         <input type="checkbox" id="masterSwitch" onchange="toggleAll(this.checked)">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
                             </th>
-                            <th style="width:65px; text-align:right;">İşlem</th>
+                            <th style="width:70px; text-align:right;">İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
             
-            <div id="emptyState" style="display:none; text-align:center; padding: 40px 20px;">
-                <div style="font-size:40px; margin-bottom:10px;">👋</div>
-                <h3 style="color:#2c3e50; margin:0 0 10px 0;">Sınıf Boş</h3>
-                <p style="color:#7f8c8d; font-size:13px; margin-bottom:20px;">Ayarlardan sınıf adı ve liste ekleyin.</p>
-                <button class="btn-blue" style="margin:0 auto;" onclick="openSettings()">+ Kurulum Yap</button>
+            <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;">
+                <div style="font-size:50px; margin-bottom:15px;">🎉</div>
+                <h3 style="color:var(--primary); margin:0 0 10px 0; font-size:20px;">Sınıfın Hazır!</h3>
+                <p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Başlamak için ayarlardan öğrenci ve kitap listesi ekle.</p>
+                <button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px; font-size:15px;" onclick="openSettings()">🚀 Kuruluma Başla</button>
             </div>
 
-            <div style="text-align:center; color:#bdc3c7; font-size:10px; margin-top:20px;">KitapMatik v30 (NameEdit)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:600;">KitapMatik v31 (Vibrant UI)</div>
         </div>
 
         <div id="view-report" class="view-section">
-            <input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()">
+            <input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;">
             <div class="card">
                 <table>
                     <thead><tr><th>Tarih</th><th>Detay</th></tr></thead>
@@ -201,7 +204,7 @@
         </div>
 
         <div id="view-inventory" class="view-section">
-            <h3 style="color:var(--primary); margin:0 0 10px 0; font-size:16px;">📦 Boştaki Kitaplar</h3>
+            <h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3>
             <div id="freeBooksList"></div>
         </div>
     </div>
@@ -224,41 +227,41 @@
 
 <div class="modal-overlay" id="classModal">
     <div class="modal">
-        <h2>🏫 Sınıflarım</h2>
-        <div id="classList" style="max-height:200px; overflow-y:auto; margin-bottom:20px;"></div>
+        <h2 style="color:var(--primary)">🏫 Sınıflarım</h2>
+        <div id="classList" style="max-height:250px; overflow-y:auto; margin-bottom:20px;"></div>
         <div style="display:flex; gap:10px;">
             <input type="text" id="newClassInput" class="input-full" placeholder="Yeni Sınıf Adı..." style="margin:0;">
-            <button class="btn-green" onclick="createNewClass()">EKLE</button>
+            <button class="btn-green" onclick="createNewClass()" style="height:auto;">EKLE</button>
         </div>
-        <button class="btn-gray" style="width:100%; margin-top:15px; padding:12px;" onclick="closeModals()">Kapat</button>
+        <button class="btn-gray" style="width:100%; margin-top:15px; padding:12px; height:auto; background:#b2bec3; color:#2d3436;" onclick="closeModals()">Kapat</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="settingsModal">
     <div class="modal">
-        <h2>⚙️ Ayarlar</h2>
+        <h2 style="color:var(--primary)">⚙️ Ayarlar</h2>
         
-        <label><b>🏷️ Sınıf Adı:</b></label>
-        <input type="text" id="classNameInput" class="input-full" placeholder="Örn: 5-A Sınıfı" style="font-weight:bold; color:var(--primary);">
+        <label style="font-weight:700; color:var(--primary);">🏷️ Sınıf Adı:</label>
+        <input type="text" id="classNameInput" class="input-full" placeholder="Örn: 5-A Sınıfı" style="font-weight:800; color:var(--primary); font-size:18px;">
         
-        <label><b>🚫 Ceza Limiti (Hafta):</b></label>
+        <label style="font-weight:600;">🚫 Ceza Limiti (Hafta):</label>
         <input type="number" id="strikeLimitInput" class="input-full" value="2">
-        <label><b>👥 Öğrenci Listesi:</b></label>
+        <label style="font-weight:600;">👥 Öğrenci Listesi:</label>
         <textarea id="studentInput" placeholder="Ahmet Yılmaz&#10;Ayşe Demir..."></textarea>
-        <label><b>📚 Kitap Listesi:</b></label>
-        <textarea id="bookInput" placeholder="Küçük Prens&#10;Şeker Portakalı..." style="margin-top:10px;"></textarea>
+        <label style="font-weight:600; margin-top:15px; display:block;">📚 Kitap Listesi:</label>
+        <textarea id="bookInput" placeholder="Küçük Prens&#10;Şeker Portakalı..."></textarea>
         
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-blue" style="flex:1; justify-content:center;" onclick="saveSettings()">Kaydet</button>
-            <button class="btn-gray" style="flex:1; justify-content:center;" onclick="closeModals()">İptal</button>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-blue" style="flex:1; justify-content:center; height:50px;" onclick="saveSettings()">KAYDET</button>
+            <button class="btn-gray" style="flex:1; justify-content:center; height:50px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">İPTAL</button>
         </div>
-        <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
-        <h3>💾 Veri Yedekleme</h3>
-        <button class="btn-green" style="width:100%; margin-bottom:10px; justify-content:center;" onclick="downloadBackup()">⬇️ Yedeği İndir</button>
-        <button class="btn-orange" style="width:100%; justify-content:center;" onclick="document.getElementById('restoreInput').click()">⬆️ Yedeği Geri Yükle</button>
+        <hr style="margin:25px 0; border:0; border-top:2px solid #eee;">
+        <h3 style="color:var(--primary)">💾 Veri Yedekleme</h3>
+        <button class="btn-green" style="width:100%; margin-bottom:10px; justify-content:center; height:45px;" onclick="downloadBackup()">⬇️ Yedeği İndir</button>
+        <button class="btn-orange" style="width:100%; justify-content:center; height:45px;" onclick="document.getElementById('restoreInput').click()">⬆️ Yedeği Geri Yükle</button>
         <input type="file" id="restoreInput" style="display:none;" onchange="restoreBackup(this)">
-        <div style="margin-top:20px; text-align:right;">
-            <button class="btn-red" style="font-size:11px;" onclick="deleteCurrentClass()">⚠️ Bu Sınıfı Sil</button>
+        <div style="margin-top:25px; text-align:center;">
+            <button class="btn-red" style="font-size:12px; padding: 0 20px; height:36px; background:#ff7675;" onclick="deleteCurrentClass()">⚠️ Bu Sınıfı Sil</button>
         </div>
     </div>
 </div>
@@ -356,7 +359,7 @@
             const btnAction = (isDel || isBan) ? `onclick="manualChange(${s.id})"` : '';
             const isToday = s.lastDate === d;
 
-            const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary);">${s.name}</div><div style="font-size:12px; color:#666; margin-top:2px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:10px; color:#999; margin-top:2px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 12px; height:28px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
+            const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:15px;">${s.name}</div><div style="font-size:13px; color:#666; margin-top:4px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:11px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 12px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
             tbody.innerHTML += row;
         });
         const master = document.getElementById('masterSwitch');
@@ -433,7 +436,6 @@
     function openSettings() {
         document.getElementById('settingsModal').style.display = 'flex';
         
-        // SINIF ADINI DOLDUR
         const cls = classes.find(c => c.id === currentClassId);
         document.getElementById('classNameInput').value = cls ? cls.name : '';
         
@@ -449,24 +451,18 @@
         
         if(!newName || !sRaw || !bRaw) return alert("Tüm alanları doldurun!");
         
-        // Sınıf Adını Güncelle
         const cls = classes.find(c => c.id === currentClassId);
         if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; }
 
         appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value;
         if(appData.students.length === 0 || confirm("Liste güncellensin mi? (Eski veriler korunur, sadece liste değişir)")) {
-             // Öğrencileri sıfırlama, sadece isim güncelle veya yeni ekle
-             // Ancak basitlik için burada tam liste yenileme mantığı var.
-             // Eğer öğrenci zaten varsa verisini korumak için:
              const lines = sRaw.split('\n').filter(x=>x.trim());
              const newStudents = lines.map((n, i) => {
                  const existing = appData.students.find(s => s.name === n.trim());
-                 if(existing) return existing; // Veriyi koru
-                 return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] }; // Yeni ekle (ID çakışmasını önlemek için basit +1000)
+                 if(existing) return existing; 
+                 return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] }; 
              });
-             // IDleri düzelt
              appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 }));
-             
              appData.books = bRaw.split('\n').filter(x=>x.trim()).map((n, i) => ({ id: i+1, name: n.trim() }));
         }
         saveData(); renderTable(); closeModals();
@@ -519,7 +515,7 @@
         const t = document.getElementById('reportBody'); t.innerHTML = ''; let hist = [];
         appData.students.forEach(s => { if(s.history) s.history.forEach(h => hist.push({...h, st: s.name})); });
         hist.sort((a,b) => new Date(b.date) - new Date(a.date));
-        hist.forEach(h => { t.innerHTML += `<tr><td style="font-size:12px; color:#666;">${h.date}</td><td><b>${h.st}</b><br><small>${h.book}</small></td></tr>`; });
+        hist.forEach(h => { t.innerHTML += `<tr><td style="font-size:13px; color:var(--primary); font-weight:600;">${h.date}</td><td><b>${h.st}</b><br><small style="color:#666;">${h.book}</small></td></tr>`; });
     }
 
     function filterReport() {
