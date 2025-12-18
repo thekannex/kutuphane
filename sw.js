@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitapmatik-v1.94-fixed'; // Versiyon Değişti
+const CACHE_NAME = 'kitapmatik-v1.95-bigfont'; // VERSİYON DEĞİŞTİ
 const ASSETS = [
   './',
   './index.html',

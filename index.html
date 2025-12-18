@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.94">
+    <link rel="manifest" href="manifest.json?v=1.95">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -16,20 +16,15 @@
     <style>
         :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #fcfcfc; --warning: #e67e22; --dark: #2d3436; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        /* 1. DEĞİŞİKLİK: Yükseklik hesabı 'dvh' yapıldı (Dinamik Viewport) */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
         
-        /* 2. DEĞİŞİKLİK: Container pozisyonu relative yapıldı */
         .container { background: white; width: 100%; max-width: 800px; height: 100%; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,0.08); position: relative; overflow: hidden; }
         
         .top-bar { background: linear-gradient(135deg, var(--primary), var(--purple)); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(72, 52, 212, 0.3); flex-shrink: 0; z-index: 10; }
         .class-selector { font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* 3. DEĞİŞİKLİK: İçerik alanı menünün arkasında kalmasın diye alttan boşluk bırakıldı */
+        /* İçerik alanı */
         .content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg-color); padding-bottom: 90px; }
-        
-        /* Kalın Kaydırma Çubuğu (Tahta İçin) */
         .content-area::-webkit-scrollbar { width: 16px; }
         .content-area::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
         .content-area::-webkit-scrollbar-thumb { background: #b2bec3; border-radius: 8px; border: 3px solid #f1f1f1; }
@@ -38,7 +33,6 @@
         .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* KONTROLLER */
         .controls { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding: 4px; align-items: center; scrollbar-width: none; }
         .date-picker { flex: 1; min-width: 120px; max-width: 150px; padding: 0 10px; border: 2px solid #eee; border-radius: 10px; height: 42px; font-weight: 600; background:white; }
         
@@ -47,9 +41,10 @@
         .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: var(--warning); } .btn-red { background: var(--danger); } .btn-dark { background: var(--dark); }
         .file-upload-btn { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 5px; }
         .card { background: white; border-radius: 16px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th { text-align: left; color: #a4b0be; font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 15px; background: #fff; border-bottom: 2px solid #f1f2f6; }
-        td { padding: 18px 15px; border-bottom: 1px solid #f7f9fa; vertical-align: middle; }
+        td { padding: 20px 15px; border-bottom: 1px solid #f7f9fa; vertical-align: middle; } /* Padding biraz daha arttı */
         tr.blocked-row td { background: #fff0f0; color: var(--danger); } tr.banned-row td { background: #ffebeb; color: #c0392b; font-weight: bold; border-left: 6px solid var(--danger); }
         
         .switch { position: relative; display: inline-block; width: 60px; height: 32px; }
@@ -59,22 +54,7 @@
         input:checked + .slider { background-color: var(--success); } input:checked + .slider:before { transform: translateX(28px); }
         .badge-new { font-size: 10px; background: rgba(0, 184, 148, 0.1); color: var(--success); padding: 2px 6px; border-radius: 6px; font-weight: 700; margin-left: 5px; }
         
-        /* 4. DEĞİŞİKLİK: NAV BAR ÇİVİLENDİ (Absolute) */
-        .nav-bar { 
-            position: absolute; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            background: white; 
-            padding: 10px 0; 
-            display: flex; 
-            justify-content: space-around; 
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); 
-            z-index: 100;
-            padding-bottom: env(safe-area-inset-bottom);
-            border-top: 1px solid #f1f1f1;
-        }
-        
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 10px 0; display: flex; justify-content: space-around; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100; padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid #f1f1f1; }
         .nav-btn { background: none; border: none; color: #b2bec3; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
         .nav-btn.active { color: var(--primary); transform: translateY(-2px); } .nav-btn svg { width: 26px; height: 26px; fill: currentColor; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.7); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
@@ -138,7 +118,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.94 (Görünür Menü)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.95 (Büyük Yazı)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -223,6 +203,7 @@
     function saveData() { if (currentClassId && appData) localStorage.setItem('km_data_' + currentClassId, JSON.stringify(appData)); }
     function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); btn.classList.add('active'); if(viewId === 'report') renderReport(); if(viewId === 'inventory') renderInventory(); }
     
+    // --- GÜNCELLENEN RENDER FONKSİYONU (DAHA BÜYÜK YAZILAR) ---
     function renderTable() {
         const tbody = document.getElementById('tableBody'); const emptyState = document.getElementById('emptyState'); const card = document.querySelector('#view-dashboard .card'); tbody.innerHTML = '';
         if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } else { card.style.display = 'block'; emptyState.style.display = 'none'; }
@@ -236,7 +217,10 @@
             if (isBan) { if (s.bookId) { btnText = 'İADE AL'; btnColor = 'btn-orange'; btnAction = `onclick="returnBookOnly(${s.id})"`; } else { btnText = 'AF ET'; btnColor = 'btn-red'; btnAction = `onclick="liftBan(${s.id})"`; } } else if (isDel) { btnText = 'Değiş'; btnColor = 'btn-blue'; }
             const isToday = s.lastDate === d;
             let strikeBadge = ''; if (s.missCount > 0) strikeBadge = `<span style="font-size:10px; color:${isBan ? '#c0392b' : '#e67e22'}; font-weight:bold; margin-left:4px;">(⚠️ ${s.missCount})</span>`;
-            const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:15px;">${s.name} ${strikeBadge}</div><div style="font-size:13px; color:#666; margin-top:4px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:11px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 10px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
+            
+            // --- BURASI DEĞİŞTİ: PUNTOLAR BÜYÜTÜLDÜ ---
+            const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:20px;">${s.name} ${strikeBadge}</div><div style="font-size:17px; color:#666; margin-top:6px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:14px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 10px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
+            
             tbody.innerHTML += row;
         });
         if(!hasEligible) allChecked = false;
