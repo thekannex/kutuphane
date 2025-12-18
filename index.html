@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.9">
+    <link rel="manifest" href="manifest.json?v=1.91">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -14,7 +14,8 @@
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <style>
-        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f9fbf6; --warning: #e67e22; --dark: #2d3436; }
+        /* Arka plan rengi #fcfcfc olarak korundu */
+        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #fcfcfc; --warning: #e67e22; --dark: #2d3436; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
@@ -107,7 +108,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.91 (Kapak)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.91 (Final)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -172,10 +173,9 @@
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('tr-TR');
         document.getElementById('simulationDate').valueAsDate = new Date();
         document.getElementById('newClassInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') createNewClass(); });
-        
         if (classes.length === 0) {
             const defId = 'cls_' + Date.now();
-            // BURASI DEĞİŞTİ: Varsayılan İsim 'KitapMatik' Oldu
+            // Varsayılan Sınıf Adı: KitapMatik
             classes.push({ id: defId, name: 'KitapMatik' }); 
             saveClasses();
             localStorage.setItem('km_data_' + defId, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 0 } }));
@@ -185,21 +185,7 @@
         }
     });
 
-    function importExcel(input, targetId) {
-        const file = input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
-                const list = jsonData.map(row => row[0]).filter(item => item && typeof item === 'string').join('\n');
-                if(list.length > 0) { document.getElementById(targetId).value = list; alert("Excel okundu!"); } else { alert("Veri bulunamadı."); }
-            } catch(err) { alert("Hata! Dosya bozuk."); }
-        }; reader.readAsArrayBuffer(file);
-    }
-
+    function importExcel(input, targetId) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = (e) => { try { const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, {type: 'array'}); const firstSheet = workbook.Sheets[workbook.SheetNames[0]]; const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1}); const list = jsonData.map(row => row[0]).filter(item => item && typeof item === 'string').join('\n'); if(list.length > 0) { document.getElementById(targetId).value = list; alert("Excel okundu!"); } else { alert("Veri bulunamadı."); } } catch(err) { alert("Hata! Dosya bozuk."); } }; reader.readAsArrayBuffer(file); }
     function getSystemDate() { return document.getElementById('simulationDate').valueAsDate?.toLocaleDateString('tr-TR') || new Date().toLocaleDateString('tr-TR'); }
     function loadClasses() { const d = localStorage.getItem('km_classes'); classes = d ? JSON.parse(d) : []; }
     function saveClasses() { localStorage.setItem('km_classes', JSON.stringify(classes)); }

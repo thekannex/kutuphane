@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitapmatik-v1.9-mehtap'; // SÜRÜM İSMİ BURADA TANIMLANDI
+const CACHE_NAME = 'kitapmatik-v1.91-final';
 const ASSETS = [
   './',
   './index.html',
