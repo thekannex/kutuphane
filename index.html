@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.92">
+    <link rel="manifest" href="manifest.json?v=1.93">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
     <script src="xlsx.full.min.js"></script>
 
     <style>
@@ -23,30 +22,48 @@
         .top-bar { background: linear-gradient(135deg, var(--primary), var(--purple)); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(72, 52, 212, 0.3); flex-shrink: 0; z-index: 10; }
         .class-selector { font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg-color); padding-bottom: 20px; }
+        
+        /* --- YENİ EKLENEN: KALIN KAYDIRMA ÇUBUĞU (TAHTA İÇİN) --- */
+        .content-area::-webkit-scrollbar { width: 16px; }
+        .content-area::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
+        .content-area::-webkit-scrollbar-thumb { background: #b2bec3; border-radius: 8px; border: 3px solid #f1f1f1; }
+        .content-area::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
         .view-section { padding: 12px; display: none; }
         .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* KONTROLLER */
         .controls { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding: 4px; align-items: center; scrollbar-width: none; }
-        .controls::-webkit-scrollbar { display: none; }
         .date-picker { flex: 1; min-width: 120px; max-width: 150px; padding: 0 10px; border: 2px solid #eee; border-radius: 10px; height: 42px; font-weight: 600; background:white; }
-        button { padding: 0 14px; height: 42px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0; }
+        
+        /* BUTONLAR DAHA BÜYÜK */
+        button { padding: 0 18px; height: 44px; border: none; border-radius: 12px; font-weight: 700; font-size: 14px; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0; }
         button:active { transform: scale(0.97); }
         .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: var(--warning); } .btn-red { background: var(--danger); } .btn-dark { background: var(--dark); }
+        
         .file-upload-btn { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 5px; }
         .card { background: white; border-radius: 16px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; color: #a4b0be; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 15px; background: #fff; border-bottom: 2px solid #f1f2f6; }
-        td { padding: 15px; border-bottom: 1px solid #f7f9fa; vertical-align: middle; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; } /* Yazı boyutu büyüdü */
+        th { text-align: left; color: #a4b0be; font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 15px; background: #fff; border-bottom: 2px solid #f1f2f6; }
+        
+        /* SATIR ARALIKLARI GENİŞLETİLDİ */
+        td { padding: 18px 15px; border-bottom: 1px solid #f7f9fa; vertical-align: middle; }
+        
         tr.blocked-row td { background: #fff0f0; color: var(--danger); } tr.banned-row td { background: #ffebeb; color: #c0392b; font-weight: bold; border-left: 6px solid var(--danger); }
-        .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
+        
+        /* --- DEVASA SWITCH (TAHTA/ÇOCUK İÇİN) --- */
+        .switch { position: relative; display: inline-block; width: 60px; height: 32px; } /* Büyütüldü */
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dfe6e9; transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); } input:checked + .slider:before { transform: translateX(18px); }
+        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; } /* Topuz büyütüldü */
+        input:checked + .slider { background-color: var(--success); } 
+        input:checked + .slider:before { transform: translateX(28px); } /* Mesafe ayarlandı */
+        
         .badge-new { font-size: 10px; background: rgba(0, 184, 148, 0.1); color: var(--success); padding: 2px 6px; border-radius: 6px; font-weight: 700; margin-left: 5px; }
-        .nav-bar { background: white; padding: 10px 0; display: flex; justify-content: space-around; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding-bottom: env(safe-area-inset-bottom); }
-        .nav-btn { background: none; border: none; color: #b2bec3; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
-        .nav-btn.active { color: var(--primary); transform: translateY(-2px); } .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-bar { background: white; padding: 12px 0; display: flex; justify-content: space-around; flex-shrink: 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding-bottom: env(safe-area-inset-bottom); }
+        .nav-btn { background: none; border: none; color: #b2bec3; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
+        .nav-btn.active { color: var(--primary); transform: translateY(-2px); } .nav-btn svg { width: 26px; height: 26px; fill: currentColor; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.7); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px); }
         .modal { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 400px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .input-full { width: 100%; padding: 12px; margin: 8px 0 20px 0; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 15px; }
@@ -99,8 +116,8 @@
                     <thead>
                         <tr>
                             <th>Öğrenci / Kitap</th>
-                            <th style="width:55px; text-align:center;"><div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:9px; margin-bottom:4px; color:var(--accent);">TÜMÜ</span><label class="switch" style="transform: scale(0.9);"><input type="checkbox" id="masterSwitch" onchange="toggleAll(this.checked)"><span class="slider round"></span></label></div></th>
-                            <th style="width:85px; text-align:right;">İşlem</th>
+                            <th style="width:70px; text-align:center;"><div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:9px; margin-bottom:4px; color:var(--accent);">TÜMÜ</span><label class="switch" style="transform: scale(0.9);"><input type="checkbox" id="masterSwitch" onchange="toggleAll(this.checked)"><span class="slider round"></span></label></div></th>
+                            <th style="width:90px; text-align:right;">İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -108,7 +125,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.92 (Final)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.93 (Tahta Modu)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -229,36 +246,7 @@
     function manualChange(id) { const s = appData.students.find(x => x.id === id); if(s.isBanned) return; let found = null; const count = appData.books.length; let ideal = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; for(let i=0; i<count; i++) { let candidate = ((ideal + i - 1) % count) + 1; let isBusy = appData.students.some(st => st.bookId === candidate); if(!isBusy) { found = candidate; break; } } if(!found) return alert("Boşta hiç kitap yok!"); if(!confirm(`${found}. kitabı veriyorum?`)) return; const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.isBanned = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (M)', book: b ? b.name : '?', bookId: found }); saveData(); renderTable(); }
     function openClassManager() { const list = document.getElementById('classList'); list.innerHTML = ''; classes.forEach(c => { const div = document.createElement('div'); div.className = 'class-item ' + (c.id === currentClassId ? 'active' : ''); div.innerHTML = `<span>${c.name}</span> ${c.id === currentClassId ? '✔' : ''}`; div.onclick = () => loadClass(c.id); list.appendChild(div); }); document.getElementById('classModal').style.display = 'flex'; }
     function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; const cls = classes.find(c => c.id === currentClassId); document.getElementById('classNameInput').value = cls ? cls.name : ''; document.getElementById('strikeLimitInput').value = (appData.settings && appData.settings.maxStrikes !== undefined) ? appData.settings.maxStrikes : 0; document.getElementById('studentInput').value = appData.students.map(s => s.name).join('\n'); document.getElementById('bookInput').value = appData.books.map(b => b.name).join('\n'); }
-    
-    function saveSettings() {
-        const newName = document.getElementById('classNameInput').value.trim();
-        const sRaw = document.getElementById('studentInput').value.trim();
-        const bRaw = document.getElementById('bookInput').value.trim();
-        
-        if(!newName || !sRaw || !bRaw) return alert("Alanlar boş olamaz!");
-        
-        const cls = classes.find(c => c.id === currentClassId);
-        if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; }
-        
-        appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value;
-        
-        const lines = sRaw.split('\n').filter(x=>x.trim());
-        const newStudents = lines.map((n, i) => {
-            const existing = appData.students.find(s => s.name === n.trim());
-            if(existing) return existing;
-            return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] };
-        });
-        
-        appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 }));
-        appData.books = bRaw.split('\n').filter(x=>x.trim()).map((n, i) => ({ id: i+1, name: n.trim() }));
-        
-        saveData(); 
-        renderTable(); 
-        closeModals();
-        
-        alert("Ayarlar Başarıyla Kaydedildi! ✅");
-    }
-
+    function saveSettings() { const newName = document.getElementById('classNameInput').value.trim(); const sRaw = document.getElementById('studentInput').value.trim(); const bRaw = document.getElementById('bookInput').value.trim(); if(!newName || !sRaw || !bRaw) return alert("Alanlar boş olamaz!"); const cls = classes.find(c => c.id === currentClassId); if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; } appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value; const lines = sRaw.split('\n').filter(x=>x.trim()); const newStudents = lines.map((n, i) => { const existing = appData.students.find(s => s.name === n.trim()); if(existing) return existing; return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] }; }); appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 })); appData.books = bRaw.split('\n').filter(x=>x.trim()).map((n, i) => ({ id: i+1, name: n.trim() })); saveData(); renderTable(); closeModals(); alert("Ayarlar Başarıyla Kaydedildi! ✅"); }
     function deleteCurrentClass() { if(confirm("Silmek istediğinize emin misiniz?")) { classes = classes.filter(c => c.id !== currentClassId); saveClasses(); localStorage.removeItem('km_data_' + currentClassId); location.reload(); } }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(e => e.style.display = 'none'); }
     function downloadBackup() { const d = {}; for(let i=0; i<localStorage.length; i++) { const k = localStorage.key(i); if(k.startsWith('km_')) d[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:"application/json"})); a.download = "kitapmatik_yedek.json"; a.click(); }
