@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.8">
+    <link rel="manifest" href="manifest.json?v=1.9">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -107,7 +107,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.8 (Sessiz Kayıt)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.9 (Mehtap)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -134,7 +134,7 @@
     <div class="modal">
         <h2 style="color:var(--primary)">⚙️ Ayarlar</h2>
         <label style="font-weight:700; color:var(--primary);">🏷️ Sınıf Adı:</label>
-        <input type="text" id="classNameInput" class="input-full" placeholder="Örn: 5-A Sınıfı" style="font-weight:800; color:var(--primary); font-size:18px;">
+        <input type="text" id="classNameInput" class="input-full" placeholder="Örn: KitapMatik" style="font-weight:800; color:var(--primary); font-size:18px;">
         
         <label style="font-weight:600;">🚫 Ceza Limiti (Hafta):</label>
         <input type="number" id="strikeLimitInput" class="input-full" value="0" placeholder="0 = Ceza Yok">
@@ -172,8 +172,12 @@
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('tr-TR');
         document.getElementById('simulationDate').valueAsDate = new Date();
         document.getElementById('newClassInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') createNewClass(); });
+        
         if (classes.length === 0) {
-            const defId = 'cls_' + Date.now(); classes.push({ id: defId, name: '5-A Sınıfı' }); saveClasses();
+            const defId = 'cls_' + Date.now();
+            // BURASI DEĞİŞTİ: Varsayılan İsim 'KitapMatik' Oldu
+            classes.push({ id: defId, name: 'KitapMatik' }); 
+            saveClasses();
             localStorage.setItem('km_data_' + defId, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 0 } }));
             loadClass(defId); setTimeout(() => { alert("Hoşgeldiniz! Kuruluma başlayabilirsiniz."); openSettings(); }, 500);
         } else {
@@ -241,7 +245,6 @@
     function openClassManager() { const list = document.getElementById('classList'); list.innerHTML = ''; classes.forEach(c => { const div = document.createElement('div'); div.className = 'class-item ' + (c.id === currentClassId ? 'active' : ''); div.innerHTML = `<span>${c.name}</span> ${c.id === currentClassId ? '✔' : ''}`; div.onclick = () => loadClass(c.id); list.appendChild(div); }); document.getElementById('classModal').style.display = 'flex'; }
     function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; const cls = classes.find(c => c.id === currentClassId); document.getElementById('classNameInput').value = cls ? cls.name : ''; document.getElementById('strikeLimitInput').value = (appData.settings && appData.settings.maxStrikes !== undefined) ? appData.settings.maxStrikes : 0; document.getElementById('studentInput').value = appData.students.map(s => s.name).join('\n'); document.getElementById('bookInput').value = appData.books.map(b => b.name).join('\n'); }
     
-    // --- GÜNCELLENEN KAYDET FONKSİYONU ---
     function saveSettings() {
         const newName = document.getElementById('classNameInput').value.trim();
         const sRaw = document.getElementById('studentInput').value.trim();
@@ -254,7 +257,6 @@
         
         appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value;
         
-        // Soru sormadan direkt kaydet (Çünkü zaten "existing" kontrolü ile veri korunuyor)
         const lines = sRaw.split('\n').filter(x=>x.trim());
         const newStudents = lines.map((n, i) => {
             const existing = appData.students.find(s => s.name === n.trim());
@@ -269,9 +271,6 @@
         renderTable(); 
         closeModals();
         
-        // İşlem bittiğinde kullanıcıya haber ver
-        // alert yerine daha zarif bir toast mesajı da olabilir ama şimdilik alert yeterli.
-        // Hatta alert bile vermeyebiliriz ama emin olmak için bir onay iyidir.
         alert("Ayarlar Başarıyla Kaydedildi! ✅");
     }
 

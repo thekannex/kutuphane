@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitapmatik-v1.8-sessiz'; // VERSİYON DEĞİŞTİ
+const CACHE_NAME = 'kitapmatik-v1.9-mehtap'; // SÜRÜM İSMİ BURADA TANIMLANDI
 const ASSETS = [
   './',
   './index.html',
