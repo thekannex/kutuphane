@@ -1,10 +1,10 @@
-const CACHE_NAME = 'kitapmatik-v1.91-final';
+const CACHE_NAME = 'kitapmatik-v1.92-usb'; // Versiyon değişti
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon.png',
-  'https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js'
+  './xlsx.full.min.js' // ARTIK YEREL DOSYAYI KAYDEDİYOR
 ];
 
 self.addEventListener('install', (e) => {

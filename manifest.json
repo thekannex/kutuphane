@@ -1,7 +1,7 @@
 {
   "name": "KitapMatik",
   "short_name": "KitapMatik",
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=1.92",
   "display": "standalone",
   "background_color": "#fcfcfc",
   "theme_color": "#4834d4",
