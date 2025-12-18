@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.1">
+    <link rel="manifest" href="manifest.json?v=1.2">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -14,7 +14,7 @@
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <style>
-        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f5f7fa; }
+        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f5f7fa; --warning: #e67e22; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
@@ -30,7 +30,7 @@
         .date-picker { flex: 1; min-width: 120px; max-width: 150px; padding: 0 10px; border: 2px solid #eee; border-radius: 10px; height: 42px; font-weight: 600; background:white; }
         button { padding: 0 14px; height: 42px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0; }
         button:active { transform: scale(0.97); }
-        .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: #e67e22; } .btn-red { background: var(--danger); }
+        .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: var(--warning); } .btn-red { background: var(--danger); }
         .file-upload-btn { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 5px; }
         .card { background: white; border-radius: 16px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -72,7 +72,7 @@
 <body>
 
 <div id="updateNotification">
-    <span>🚀 Yeni sürüm bulundu!</span>
+    <span>🚀 Güncelleme var!</span>
     <button onclick="updateApp()">YÜKLE</button>
 </div>
 
@@ -98,7 +98,7 @@
                         <tr>
                             <th>Öğrenci / Kitap</th>
                             <th style="width:55px; text-align:center;"><div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:9px; margin-bottom:4px; color:var(--accent);">TÜMÜ</span><label class="switch" style="transform: scale(0.9);"><input type="checkbox" id="masterSwitch" onchange="toggleAll(this.checked)"><span class="slider round"></span></label></div></th>
-                            <th style="width:70px; text-align:right;">İşlem</th>
+                            <th style="width:85px; text-align:right;">İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -106,7 +106,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.1</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.2 (İade Modu)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -128,9 +128,7 @@
         <label style="font-weight:600;">🚫 Ceza Limiti (Hafta):</label>
         <input type="number" id="strikeLimitInput" class="input-full" value="2">
         <div style="display:flex; justify-content:space-between; align-items:center;"><label style="font-weight:600;">👥 Öğrenci Listesi:</label><label class="file-upload-btn">📂 Excel'den Yükle<input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'studentInput')"></label></div><textarea id="studentInput" placeholder="Ahmet Yılmaz&#10;Ayşe Demir..."></textarea><div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;"><label style="font-weight:600;">📚 Kitap Listesi:</label><label class="file-upload-btn" style="background:#00b894;">📂 Excel'den Yükle<input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'bookInput')"></label></div><textarea id="bookInput" placeholder="Küçük Prens&#10;Şeker Portakalı..."></textarea>
-        
         <button class="btn-purple" style="width:100%; margin-top:15px; height:45px; justify-content:center;" onclick="checkForUpdates()">🔄 Güncellemeleri Kontrol Et</button>
-
         <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-blue" style="flex:1; justify-content:center; height:50px;" onclick="saveSettings()">KAYDET</button><button class="btn-gray" style="flex:1; justify-content:center; height:50px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">İPTAL</button></div><hr style="margin:25px 0; border:0; border-top:2px solid #eee;"><h3 style="color:var(--primary)">💾 Veri Yedekleme</h3><button class="btn-green" style="width:100%; margin-bottom:10px; justify-content:center; height:45px;" onclick="downloadBackup()">⬇️ Yedeği İndir</button><button class="btn-orange" style="width:100%; justify-content:center; height:45px;" onclick="document.getElementById('restoreInput').click()">⬆️ Yedeği Geri Yükle</button><input type="file" id="restoreInput" style="display:none;" onchange="restoreBackup(this)"><div style="margin-top:25px; text-align:center;"><button class="btn-red" style="font-size:12px; padding: 0 20px; height:36px; background:#ff7675;" onclick="deleteCurrentClass()">⚠️ Bu Sınıfı Sil</button></div>
     </div>
 </div>
@@ -154,22 +152,7 @@
     }
     function updateApp() { if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' }); else if(navigator.serviceWorker.controller) window.location.reload(); }
     navigator.serviceWorker.addEventListener('controllerchange', () => { window.location.reload(); });
-
-    // MANUEL GÜNCELLEME KONTROLÜ
-    async function checkForUpdates() {
-        if ('serviceWorker' in navigator) {
-            const reg = await navigator.serviceWorker.ready;
-            alert("Güncellemeler kontrol ediliyor...");
-            try {
-                await reg.update();
-                // Eğer güncelleme varsa yukarıdaki 'updatefound' listener yakalayacaktır.
-                // Biz sadece kullanıcıya işlemin bittiğini hissettirmek için kısa bir timeout koyalım.
-                setTimeout(() => {
-                    if (!reg.installing && !reg.waiting) alert("Sürümünüz Zaten Güncel! ✅");
-                }, 1000);
-            } catch (err) { alert("Bağlantı hatası! İnterneti kontrol edin."); }
-        } else { alert("Tarayıcınız bunu desteklemiyor."); }
-    }
+    async function checkForUpdates() { if ('serviceWorker' in navigator) { const reg = await navigator.serviceWorker.ready; alert("Kontrol ediliyor..."); try { await reg.update(); setTimeout(() => { if (!reg.installing && !reg.waiting) alert("Güncel! ✅"); }, 1000); } catch (err) { alert("İnternet yok."); } } }
 
     let appData = null; let currentClassId = null; let classes = [];
     document.addEventListener('DOMContentLoaded', () => {
@@ -208,11 +191,57 @@
     function loadClass(id) { currentClassId = id; localStorage.setItem('last_active_class', id); const cls = classes.find(c => c.id === id); if(cls) document.getElementById('headerClassName').innerText = cls.name; const raw = localStorage.getItem('km_data_' + id); appData = raw ? JSON.parse(raw) : { students: [], books: [], settings: { maxStrikes: 2 } }; renderTable(); closeModals(); }
     function saveData() { if (currentClassId && appData) localStorage.setItem('km_data_' + currentClassId, JSON.stringify(appData)); }
     function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); btn.classList.add('active'); if(viewId === 'report') renderReport(); if(viewId === 'inventory') renderInventory(); }
-    function renderTable() { const tbody = document.getElementById('tableBody'); const emptyState = document.getElementById('emptyState'); const card = document.querySelector('#view-dashboard .card'); tbody.innerHTML = ''; if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } else { card.style.display = 'block'; emptyState.style.display = 'none'; } let allChecked = true; const d = getSystemDate(); appData.students.forEach(s => { if (!s.delivered) allChecked = false; const bName = s.bookId ? (appData.books.find(b=>b.id===s.bookId)?.name || 'Bilinmeyen') : 'Kitap Yok'; const isBan = s.isBanned, isDel = s.delivered; let trClass = ''; if (isBan) trClass = 'banned-row'; else if (s.blocked && !isBan && !isDel) trClass = 'blocked-row'; const btnText = isBan ? 'AF' : 'Değiş'; const btnColor = isBan ? 'btn-red' : (isDel ? 'btn-blue' : 'btn-gray'); const btnAction = (isDel || isBan) ? `onclick="manualChange(${s.id})"` : ''; const isToday = s.lastDate === d; const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:15px;">${s.name}</div><div style="font-size:13px; color:#666; margin-top:4px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:11px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 12px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`; tbody.innerHTML += row; }); const master = document.getElementById('masterSwitch'); if(master) master.checked = (appData.students.length > 0 && allChecked); }
-    function toggleAll(status) { if(confirm(status ? "Tümü 'TESLİM ETTİ' olsun mu?" : "İşaretler kaldırılsın mı?")) { appData.students.forEach(s => { s.delivered = status; if(status) s.blocked = false; }); saveData(); renderTable(); } else { document.getElementById('masterSwitch').checked = !status; } }
+    
+    // --- GÜNCELLENEN RENDER TABLE FONKSİYONU ---
+    function renderTable() {
+        const tbody = document.getElementById('tableBody'); const emptyState = document.getElementById('emptyState'); const card = document.querySelector('#view-dashboard .card'); tbody.innerHTML = '';
+        if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } else { card.style.display = 'block'; emptyState.style.display = 'none'; }
+        let allChecked = true; const d = getSystemDate();
+        appData.students.forEach(s => {
+            if (!s.delivered) allChecked = false;
+            const bName = s.bookId ? (appData.books.find(b=>b.id===s.bookId)?.name || 'Bilinmeyen') : 'Kitap Yok';
+            const isBan = s.isBanned, isDel = s.delivered;
+            let trClass = ''; if (isBan) trClass = 'banned-row'; else if (s.blocked && !isBan && !isDel) trClass = 'blocked-row';
+            
+            // --- YENİ BUTON MANTIĞI ---
+            let btnText = 'Değiş'; let btnColor = 'btn-gray'; let btnAction = `onclick="manualChange(${s.id})"`;
+            
+            if (isBan) {
+                if (s.bookId) {
+                    // Cezalı ve Elinde Kitap Var -> İADE AL
+                    btnText = 'İADE AL'; btnColor = 'btn-orange'; btnAction = `onclick="returnBookOnly(${s.id})"`;
+                } else {
+                    // Cezalı ve Kitabı Yok -> AF ET
+                    btnText = 'AF ET'; btnColor = 'btn-red'; btnAction = `onclick="liftBan(${s.id})"`;
+                }
+            } else if (isDel) {
+                btnText = 'Değiş'; btnColor = 'btn-blue';
+            }
+
+            const isToday = s.lastDate === d;
+            const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:15px;">${s.name}</div><div style="font-size:13px; color:#666; margin-top:4px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:11px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 10px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
+            tbody.innerHTML += row;
+        });
+        const master = document.getElementById('masterSwitch'); if(master) master.checked = (appData.students.length > 0 && allChecked);
+    }
+
+    // --- YENİ FONKSİYONLAR ---
+    function returnBookOnly(id) {
+        if(!confirm("Öğrenci cezalı kalacak ama kitabı envantere dönecek. Onaylıyor musun?")) return;
+        const s = appData.students.find(x => x.id === id);
+        if(s) { s.bookId = null; s.delivered = false; saveData(); renderTable(); }
+    }
+
+    function liftBan(id) {
+        if(!confirm("Öğrencinin cezası kaldırılacak. Onaylıyor musun?")) return;
+        const s = appData.students.find(x => x.id === id);
+        if(s) { s.isBanned = false; s.missCount = 0; saveData(); renderTable(); }
+    }
+
+    function toggleAll(status) { if(confirm(status ? "Tümü 'TESLİM ETTİ' olsun mu?" : "İşaretler kaldırılsın mı?")) { appData.students.forEach(s => { if (!s.isBanned) { s.delivered = status; if(status) s.blocked = false; }}); saveData(); renderTable(); } else { document.getElementById('masterSwitch').checked = !status; } }
     function toggleOne(id, status) { const s = appData.students.find(x => x.id === id); if(s) { s.delivered = status; if(status) s.blocked = false; saveData(); renderTable(); } }
     function nextRotation() { const d = getSystemDate(); if(!confirm(`Tarih: ${d}\nHaftalık dağıtım yapılsın mı?`)) return; const count = appData.books.length, limit = parseInt(appData.settings.maxStrikes); appData.students.forEach(s => { if(s.isBanned) return; if(s.bookId === null || s.delivered) { let nextId = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; if(appData.students.some(st => st.bookId === nextId)) { for(let i=1; i<=count; i++) if(!appData.students.some(st => st.bookId === i)) { nextId = i; break; } } s.bookId = nextId; s.delivered = false; s.blocked = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === nextId); if(!s.history) s.history = []; s.history.push({ date: d, book: b ? b.name : '?', bookId: nextId }); } else { s.blocked = true; s.missCount = (s.missCount || 0) + 1; if(s.missCount >= limit) s.isBanned = true; } }); saveData(); renderTable(); }
-    function manualChange(id) { const s = appData.students.find(x => x.id === id); if(s.isBanned && !confirm("Cezayı kaldırıp kitap verilsin mi?")) return; let found = null; const count = appData.books.length; let ideal = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; for(let i=0; i<count; i++) { let candidate = ((ideal + i - 1) % count) + 1; let isBusy = appData.students.some(st => st.bookId === candidate); if(!isBusy) { found = candidate; break; } } if(!found) return alert("Boşta hiç kitap yok!"); if(!confirm(`${found}. kitabı veriyorum?`)) return; const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.isBanned = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (M)', book: b ? b.name : '?', bookId: found }); saveData(); renderTable(); }
+    function manualChange(id) { const s = appData.students.find(x => x.id === id); if(s.isBanned) return; let found = null; const count = appData.books.length; let ideal = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; for(let i=0; i<count; i++) { let candidate = ((ideal + i - 1) % count) + 1; let isBusy = appData.students.some(st => st.bookId === candidate); if(!isBusy) { found = candidate; break; } } if(!found) return alert("Boşta hiç kitap yok!"); if(!confirm(`${found}. kitabı veriyorum?`)) return; const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.isBanned = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (M)', book: b ? b.name : '?', bookId: found }); saveData(); renderTable(); }
     function openClassManager() { const list = document.getElementById('classList'); list.innerHTML = ''; classes.forEach(c => { const div = document.createElement('div'); div.className = 'class-item ' + (c.id === currentClassId ? 'active' : ''); div.innerHTML = `<span>${c.name}</span> ${c.id === currentClassId ? '✔' : ''}`; div.onclick = () => loadClass(c.id); list.appendChild(div); }); document.getElementById('classModal').style.display = 'flex'; }
     function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; const cls = classes.find(c => c.id === currentClassId); document.getElementById('classNameInput').value = cls ? cls.name : ''; document.getElementById('strikeLimitInput').value = appData.settings?.maxStrikes || 2; document.getElementById('studentInput').value = appData.students.map(s => s.name).join('\n'); document.getElementById('bookInput').value = appData.books.map(b => b.name).join('\n'); }
     function saveSettings() { const newName = document.getElementById('classNameInput').value.trim(); const sRaw = document.getElementById('studentInput').value.trim(); const bRaw = document.getElementById('bookInput').value.trim(); if(!newName || !sRaw || !bRaw) return alert("Alanlar boş olamaz!"); const cls = classes.find(c => c.id === currentClassId); if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; } appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value; if(appData.students.length === 0 || confirm("Liste güncellensin mi?")) { const lines = sRaw.split('\n').filter(x=>x.trim()); const newStudents = lines.map((n, i) => { const existing = appData.students.find(s => s.name === n.trim()); if(existing) return existing; return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] }; }); appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 })); appData.books = bRaw.split('\n').filter(x=>x.trim()).map((n, i) => ({ id: i+1, name: n.trim() })); } saveData(); renderTable(); closeModals(); }
