@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.2">
+    <link rel="manifest" href="manifest.json?v=1.3">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -14,6 +14,7 @@
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <style>
+        /* --- TEMEL STİLLER (Aynı) --- */
         :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f5f7fa; --warning: #e67e22; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
@@ -67,6 +68,26 @@
         }
         @keyframes slideUpToast { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @media (min-width: 600px) { .container { margin: 30px auto; height: 90vh; border-radius: 24px; } .view-section { padding: 25px; } }
+
+        /* --- YENİ EKLENEN RESPONSIVE DÜZENLEME (SADECE TELEFONLAR İÇİN) --- */
+        @media (max-width: 600px) {
+            .controls {
+                flex-wrap: wrap; /* Sığmazsa alt satıra geç */
+                gap: 10px; /* Dikey ve yatay boşluğu aç */
+                justify-content: center; /* Ortala */
+            }
+            .date-picker {
+                flex: 1 1 100%; /* Tarih kutusu tam genişlik kaplasın */
+                max-width: none; /* Genişlik kısıtlamasını kaldır */
+                order: 1; /* En üstte olsun */
+            }
+            .controls button {
+                flex: 1 1 auto; /* Butonlar kalan yeri paylaşsın */
+                min-width: 90px; /* Çok küçülmesinler */
+                order: 2; /* Tarih kutusunun altında olsunlar */
+                justify-content: center; /* İkon ve yazıyı ortala */
+            }
+        }
     </style>
 </head>
 <body>
@@ -106,7 +127,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.2 (İade Modu)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.3 (Rahat Görünüm)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -192,7 +213,6 @@
     function saveData() { if (currentClassId && appData) localStorage.setItem('km_data_' + currentClassId, JSON.stringify(appData)); }
     function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); btn.classList.add('active'); if(viewId === 'report') renderReport(); if(viewId === 'inventory') renderInventory(); }
     
-    // --- GÜNCELLENEN RENDER TABLE FONKSİYONU ---
     function renderTable() {
         const tbody = document.getElementById('tableBody'); const emptyState = document.getElementById('emptyState'); const card = document.querySelector('#view-dashboard .card'); tbody.innerHTML = '';
         if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } else { card.style.display = 'block'; emptyState.style.display = 'none'; }
@@ -203,15 +223,11 @@
             const isBan = s.isBanned, isDel = s.delivered;
             let trClass = ''; if (isBan) trClass = 'banned-row'; else if (s.blocked && !isBan && !isDel) trClass = 'blocked-row';
             
-            // --- YENİ BUTON MANTIĞI ---
             let btnText = 'Değiş'; let btnColor = 'btn-gray'; let btnAction = `onclick="manualChange(${s.id})"`;
-            
             if (isBan) {
                 if (s.bookId) {
-                    // Cezalı ve Elinde Kitap Var -> İADE AL
                     btnText = 'İADE AL'; btnColor = 'btn-orange'; btnAction = `onclick="returnBookOnly(${s.id})"`;
                 } else {
-                    // Cezalı ve Kitabı Yok -> AF ET
                     btnText = 'AF ET'; btnColor = 'btn-red'; btnAction = `onclick="liftBan(${s.id})"`;
                 }
             } else if (isDel) {
@@ -225,7 +241,6 @@
         const master = document.getElementById('masterSwitch'); if(master) master.checked = (appData.students.length > 0 && allChecked);
     }
 
-    // --- YENİ FONKSİYONLAR ---
     function returnBookOnly(id) {
         if(!confirm("Öğrenci cezalı kalacak ama kitabı envantere dönecek. Onaylıyor musun?")) return;
         const s = appData.students.find(x => x.id === id);
