@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.6">
+    <link rel="manifest" href="manifest.json?v=1.8">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -54,17 +54,9 @@
         .class-item.active { background: rgba(0, 184, 148, 0.1); color: var(--success); }
         .book-chip { display:inline-block; padding:8px 12px; margin:4px; background:white; border:2px solid #eee; border-radius: 20px; font-size: 12px; color: var(--primary); font-weight: 600; }
         
-        #updateNotification {
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background: #2d3436; color: white; padding: 12px 20px; border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000;
-            display: none; align-items: center; gap: 15px; animation: slideUpToast 0.5s;
-        }
+        #updateNotification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 12px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000; display: none; align-items: center; gap: 15px; animation: slideUpToast 0.5s; }
         #updateNotification span { font-size: 13px; font-weight: 600; }
-        #updateNotification button {
-            background: var(--success); color: white; border: none; padding: 5px 15px;
-            border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; height: 30px;
-        }
+        #updateNotification button { background: var(--success); color: white; border: none; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; height: 30px; }
         @keyframes slideUpToast { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         @media (min-width: 600px) { .container { margin: 30px auto; height: 90vh; border-radius: 24px; } .view-section { padding: 25px; } }
         @media (max-width: 600px) {
@@ -72,16 +64,8 @@
             .date-picker { flex: 1 1 100%; max-width: none; order: 1; }
             .controls button { flex: 1 1 auto; min-width: 90px; order: 2; justify-content: center; }
         }
-
-        /* DAĞITIM LİSTESİ STİLİ */
-        .dist-row {
-            display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 16px;
-        }
-        .dist-id {
-            background: var(--primary); color: white; font-weight: 900; 
-            width: 40px; height: 40px; border-radius: 50%; display: flex; 
-            justify-content: center; align-items: center; margin-right: 15px; font-size: 18px;
-        }
+        .dist-row { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 16px; }
+        .dist-id { background: var(--primary); color: white; font-weight: 900; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; font-size: 18px; }
         .dist-name { font-weight: 600; color: #2d3436; }
     </style>
 </head>
@@ -105,7 +89,8 @@
             <div class="controls">
                 <input type="date" id="simulationDate" class="date-picker">
                 <button class="btn-blue" onclick="nextRotation()">🔄 Dağıt</button>
-                <button class="btn-dark" onclick="openDistributionMode()">📢 Liste</button> <button class="btn-purple" onclick="runSystemCheck()">🩺 Doktor</button>
+                <button class="btn-dark" onclick="openDistributionMode()">📢 Liste</button>
+                <button class="btn-purple" onclick="runSystemCheck()">🩺 Doktor</button>
                 <button class="btn-gray" onclick="openSettings()">⚙️ Ayar</button>
             </div>
             <div class="card">
@@ -122,7 +107,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.6 (Hızlı Dağıtım)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.8 (Sessiz Kayıt)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -150,8 +135,10 @@
         <h2 style="color:var(--primary)">⚙️ Ayarlar</h2>
         <label style="font-weight:700; color:var(--primary);">🏷️ Sınıf Adı:</label>
         <input type="text" id="classNameInput" class="input-full" placeholder="Örn: 5-A Sınıfı" style="font-weight:800; color:var(--primary); font-size:18px;">
+        
         <label style="font-weight:600;">🚫 Ceza Limiti (Hafta):</label>
-        <input type="number" id="strikeLimitInput" class="input-full" value="2">
+        <input type="number" id="strikeLimitInput" class="input-full" value="0" placeholder="0 = Ceza Yok">
+        
         <div style="display:flex; justify-content:space-between; align-items:center;"><label style="font-weight:600;">👥 Öğrenci Listesi:</label><label class="file-upload-btn">📂 Excel'den Yükle<input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'studentInput')"></label></div><textarea id="studentInput" placeholder="Ahmet Yılmaz&#10;Ayşe Demir..."></textarea><div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;"><label style="font-weight:600;">📚 Kitap Listesi:</label><label class="file-upload-btn" style="background:#00b894;">📂 Excel'den Yükle<input type="file" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'bookInput')"></label></div><textarea id="bookInput" placeholder="Küçük Prens&#10;Şeker Portakalı..."></textarea>
         <button class="btn-purple" style="width:100%; margin-top:15px; height:45px; justify-content:center;" onclick="checkForUpdates()">🔄 Güncellemeleri Kontrol Et</button>
         <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-blue" style="flex:1; justify-content:center; height:50px;" onclick="saveSettings()">KAYDET</button><button class="btn-gray" style="flex:1; justify-content:center; height:50px; background:#b2bec3; color:#2d3436;" onclick="closeModals()">İPTAL</button></div><hr style="margin:25px 0; border:0; border-top:2px solid #eee;"><h3 style="color:var(--primary)">💾 Veri Yedekleme</h3><button class="btn-green" style="width:100%; margin-bottom:10px; justify-content:center; height:45px;" onclick="downloadBackup()">⬇️ Yedeği İndir</button><button class="btn-orange" style="width:100%; justify-content:center; height:45px;" onclick="document.getElementById('restoreInput').click()">⬆️ Yedeği Geri Yükle</button><input type="file" id="restoreInput" style="display:none;" onchange="restoreBackup(this)"><div style="margin-top:25px; text-align:center;"><button class="btn-red" style="font-size:12px; padding: 0 20px; height:36px; background:#ff7675;" onclick="deleteCurrentClass()">⚠️ Bu Sınıfı Sil</button></div>
@@ -187,7 +174,7 @@
         document.getElementById('newClassInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') createNewClass(); });
         if (classes.length === 0) {
             const defId = 'cls_' + Date.now(); classes.push({ id: defId, name: '5-A Sınıfı' }); saveClasses();
-            localStorage.setItem('km_data_' + defId, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 2 } }));
+            localStorage.setItem('km_data_' + defId, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 0 } }));
             loadClass(defId); setTimeout(() => { alert("Hoşgeldiniz! Kuruluma başlayabilirsiniz."); openSettings(); }, 500);
         } else {
             const lastId = localStorage.getItem('last_active_class'); if(lastId && classes.find(c=>c.id===lastId)) loadClass(lastId); else loadClass(classes[0].id);
@@ -212,8 +199,8 @@
     function getSystemDate() { return document.getElementById('simulationDate').valueAsDate?.toLocaleDateString('tr-TR') || new Date().toLocaleDateString('tr-TR'); }
     function loadClasses() { const d = localStorage.getItem('km_classes'); classes = d ? JSON.parse(d) : []; }
     function saveClasses() { localStorage.setItem('km_classes', JSON.stringify(classes)); }
-    function createNewClass() { const name = document.getElementById('newClassInput').value.trim(); if (name) { const id = 'cls_' + Date.now(); classes.push({ id: id, name: name }); saveClasses(); localStorage.setItem('km_data_' + id, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 2 } })); document.getElementById('newClassInput').value = ''; closeModals(); loadClass(id); setTimeout(() => openSettings(), 300); } else alert("Sınıf adı yazın."); }
-    function loadClass(id) { currentClassId = id; localStorage.setItem('last_active_class', id); const cls = classes.find(c => c.id === id); if(cls) document.getElementById('headerClassName').innerText = cls.name; const raw = localStorage.getItem('km_data_' + id); appData = raw ? JSON.parse(raw) : { students: [], books: [], settings: { maxStrikes: 2 } }; renderTable(); closeModals(); }
+    function createNewClass() { const name = document.getElementById('newClassInput').value.trim(); if (name) { const id = 'cls_' + Date.now(); classes.push({ id: id, name: name }); saveClasses(); localStorage.setItem('km_data_' + id, JSON.stringify({ students: [], books: [], settings: { maxStrikes: 0 } })); document.getElementById('newClassInput').value = ''; closeModals(); loadClass(id); setTimeout(() => openSettings(), 300); } else alert("Sınıf adı yazın."); }
+    function loadClass(id) { currentClassId = id; localStorage.setItem('last_active_class', id); const cls = classes.find(c => c.id === id); if(cls) document.getElementById('headerClassName').innerText = cls.name; const raw = localStorage.getItem('km_data_' + id); appData = raw ? JSON.parse(raw) : { students: [], books: [], settings: { maxStrikes: 0 } }; renderTable(); closeModals(); }
     function saveData() { if (currentClassId && appData) localStorage.setItem('km_data_' + currentClassId, JSON.stringify(appData)); }
     function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); btn.classList.add('active'); if(viewId === 'report') renderReport(); if(viewId === 'inventory') renderInventory(); }
     
@@ -237,28 +224,11 @@
         const master = document.getElementById('masterSwitch'); if(master) master.checked = (appData.students.length > 0 && allChecked);
     }
 
-    // --- YENİ EKLENEN DAĞITIM LİSTESİ MANTIĞI ---
     function openDistributionMode() {
-        const listDiv = document.getElementById('distributionList');
-        listDiv.innerHTML = '';
-        
-        // Sadece kitabı olan öğrencileri al, Kitap ID'ye göre sırala (Küçükten Büyüğe)
-        const distList = appData.students
-            .filter(s => s.bookId !== null && s.bookId !== undefined)
-            .sort((a, b) => a.bookId - b.bookId);
-
-        if (distList.length === 0) {
-            listDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Henüz dağıtılmış kitap yok.</div>';
-        } else {
-            distList.forEach(s => {
-                const row = `
-                <div class="dist-row">
-                    <div class="dist-id">#${s.bookId}</div>
-                    <div class="dist-name">${s.name}</div>
-                </div>`;
-                listDiv.innerHTML += row;
-            });
-        }
+        const listDiv = document.getElementById('distributionList'); listDiv.innerHTML = '';
+        const distList = appData.students.filter(s => s.bookId !== null && s.bookId !== undefined).sort((a, b) => a.bookId - b.bookId);
+        if (distList.length === 0) { listDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Henüz dağıtılmış kitap yok.</div>'; } 
+        else { distList.forEach(s => { const row = `<div class="dist-row"><div class="dist-id">#${s.bookId}</div><div class="dist-name">${s.name}</div></div>`; listDiv.innerHTML += row; }); }
         document.getElementById('distributionModal').style.display = 'flex';
     }
 
@@ -266,11 +236,45 @@
     function liftBan(id) { const s = appData.students.find(x => x.id === id); if(!s) return; let found = null; for(let i=0; i<appData.books.length; i++) { const b = appData.books[i]; const isBusy = appData.students.some(st => st.bookId === b.id); const isRead = s.history ? s.history.some(h => h.bookId === b.id) : false; if(!isBusy && !isRead) { found = b.id; break; } } let msg = "Öğrencinin cezası kaldırılacak."; if(found) msg += `\nSistem otomatik olarak #${found} numaralı kitabı atayacak.`; else msg += "\n⚠️ UYARI: Uygun boş kitap bulunamadı! Kitapsız devam edecek."; if(!confirm(msg)) return; s.isBanned = false; s.missCount = 0; if(found) { const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.lastDate = d; const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (AF)', book: b ? b.name : '?', bookId: found }); } saveData(); renderTable(); }
     function toggleAll(status) { if(confirm(status ? "Tümü 'TESLİM ETTİ' olsun mu?" : "İşaretler kaldırılsın mı?")) { appData.students.forEach(s => { if (!s.isBanned) { s.delivered = status; if(status) s.blocked = false; }}); saveData(); renderTable(); } else { document.getElementById('masterSwitch').checked = !status; } }
     function toggleOne(id, status) { const s = appData.students.find(x => x.id === id); if(s) { s.delivered = status; if(status) s.blocked = false; saveData(); renderTable(); } }
-    function nextRotation() { const d = getSystemDate(); if(!confirm(`Tarih: ${d}\nHaftalık dağıtım yapılsın mı?`)) return; const count = appData.books.length, limit = parseInt(appData.settings.maxStrikes); appData.students.forEach(s => { if(s.isBanned) return; if(s.bookId === null || s.delivered) { let nextId = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; if(appData.students.some(st => st.bookId === nextId)) { for(let i=1; i<=count; i++) if(!appData.students.some(st => st.bookId === i)) { nextId = i; break; } } s.bookId = nextId; s.delivered = false; s.blocked = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === nextId); if(!s.history) s.history = []; s.history.push({ date: d, book: b ? b.name : '?', bookId: nextId }); } else { s.blocked = true; s.missCount = (s.missCount || 0) + 1; if(s.missCount >= limit) s.isBanned = true; } }); saveData(); renderTable(); }
+    function nextRotation() { const d = getSystemDate(); if(!confirm(`Tarih: ${d}\nHaftalık dağıtım yapılsın mı?`)) return; const count = appData.books.length, limit = parseInt(appData.settings.maxStrikes || 0); appData.students.forEach(s => { if(s.isBanned) return; if(s.bookId === null || s.delivered) { let nextId = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; if(appData.students.some(st => st.bookId === nextId)) { for(let i=1; i<=count; i++) if(!appData.students.some(st => st.bookId === i)) { nextId = i; break; } } s.bookId = nextId; s.delivered = false; s.blocked = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === nextId); if(!s.history) s.history = []; s.history.push({ date: d, book: b ? b.name : '?', bookId: nextId }); } else { s.blocked = true; s.missCount = (s.missCount || 0) + 1; if(limit > 0 && s.missCount >= limit) s.isBanned = true; } }); saveData(); renderTable(); }
     function manualChange(id) { const s = appData.students.find(x => x.id === id); if(s.isBanned) return; let found = null; const count = appData.books.length; let ideal = s.bookId ? (s.bookId % count) + 1 : ((s.id - 1) % count) + 1; for(let i=0; i<count; i++) { let candidate = ((ideal + i - 1) % count) + 1; let isBusy = appData.students.some(st => st.bookId === candidate); if(!isBusy) { found = candidate; break; } } if(!found) return alert("Boşta hiç kitap yok!"); if(!confirm(`${found}. kitabı veriyorum?`)) return; const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.isBanned = false; s.missCount = 0; s.lastDate = d; const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (M)', book: b ? b.name : '?', bookId: found }); saveData(); renderTable(); }
     function openClassManager() { const list = document.getElementById('classList'); list.innerHTML = ''; classes.forEach(c => { const div = document.createElement('div'); div.className = 'class-item ' + (c.id === currentClassId ? 'active' : ''); div.innerHTML = `<span>${c.name}</span> ${c.id === currentClassId ? '✔' : ''}`; div.onclick = () => loadClass(c.id); list.appendChild(div); }); document.getElementById('classModal').style.display = 'flex'; }
-    function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; const cls = classes.find(c => c.id === currentClassId); document.getElementById('classNameInput').value = cls ? cls.name : ''; document.getElementById('strikeLimitInput').value = appData.settings?.maxStrikes || 2; document.getElementById('studentInput').value = appData.students.map(s => s.name).join('\n'); document.getElementById('bookInput').value = appData.books.map(b => b.name).join('\n'); }
-    function saveSettings() { const newName = document.getElementById('classNameInput').value.trim(); const sRaw = document.getElementById('studentInput').value.trim(); const bRaw = document.getElementById('bookInput').value.trim(); if(!newName || !sRaw || !bRaw) return alert("Alanlar boş olamaz!"); const cls = classes.find(c => c.id === currentClassId); if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; } appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value; if(appData.students.length === 0 || confirm("Liste güncellensin mi?")) { const lines = sRaw.split('\n').filter(x=>x.trim()); const newStudents = lines.map((n, i) => { const existing = appData.students.find(s => s.name === n.trim()); if(existing) return existing; return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] }; }); appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 })); appData.books = bRaw.split('\n').filter(x=>x.trim()).map((n, i) => ({ id: i+1, name: n.trim() })); } saveData(); renderTable(); closeModals(); }
+    function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; const cls = classes.find(c => c.id === currentClassId); document.getElementById('classNameInput').value = cls ? cls.name : ''; document.getElementById('strikeLimitInput').value = (appData.settings && appData.settings.maxStrikes !== undefined) ? appData.settings.maxStrikes : 0; document.getElementById('studentInput').value = appData.students.map(s => s.name).join('\n'); document.getElementById('bookInput').value = appData.books.map(b => b.name).join('\n'); }
+    
+    // --- GÜNCELLENEN KAYDET FONKSİYONU ---
+    function saveSettings() {
+        const newName = document.getElementById('classNameInput').value.trim();
+        const sRaw = document.getElementById('studentInput').value.trim();
+        const bRaw = document.getElementById('bookInput').value.trim();
+        
+        if(!newName || !sRaw || !bRaw) return alert("Alanlar boş olamaz!");
+        
+        const cls = classes.find(c => c.id === currentClassId);
+        if(cls) { cls.name = newName; saveClasses(); document.getElementById('headerClassName').innerText = newName; }
+        
+        appData.settings.maxStrikes = document.getElementById('strikeLimitInput').value;
+        
+        // Soru sormadan direkt kaydet (Çünkü zaten "existing" kontrolü ile veri korunuyor)
+        const lines = sRaw.split('\n').filter(x=>x.trim());
+        const newStudents = lines.map((n, i) => {
+            const existing = appData.students.find(s => s.name === n.trim());
+            if(existing) return existing;
+            return { id: i+1000, name: n.trim(), bookId: null, delivered: false, history: [] };
+        });
+        
+        appData.students = newStudents.map((s,i) => ({ ...s, id: i+1 }));
+        appData.books = bRaw.split('\n').filter(x=>x.trim()).map((n, i) => ({ id: i+1, name: n.trim() }));
+        
+        saveData(); 
+        renderTable(); 
+        closeModals();
+        
+        // İşlem bittiğinde kullanıcıya haber ver
+        // alert yerine daha zarif bir toast mesajı da olabilir ama şimdilik alert yeterli.
+        // Hatta alert bile vermeyebiliriz ama emin olmak için bir onay iyidir.
+        alert("Ayarlar Başarıyla Kaydedildi! ✅");
+    }
+
     function deleteCurrentClass() { if(confirm("Silmek istediğinize emin misiniz?")) { classes = classes.filter(c => c.id !== currentClassId); saveClasses(); localStorage.removeItem('km_data_' + currentClassId); location.reload(); } }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(e => e.style.display = 'none'); }
     function downloadBackup() { const d = {}; for(let i=0; i<localStorage.length; i++) { const k = localStorage.key(i); if(k.startsWith('km_')) d[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type:"application/json"})); a.download = "kitapmatik_yedek.json"; a.click(); }
