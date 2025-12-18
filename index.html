@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KitapMatik</title>
     
-    <link rel="manifest" href="manifest.json?v=1.5">
+    <link rel="manifest" href="manifest.json?v=1.6">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#4834d4">
@@ -14,7 +14,7 @@
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <style>
-        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f5f7fa; --warning: #e67e22; }
+        :root { --primary: #4834d4; --accent: #0984e3; --success: #00b894; --danger: #d63031; --purple: #a55eea; --bg-color: #f5f7fa; --warning: #e67e22; --dark: #2d3436; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
@@ -30,7 +30,7 @@
         .date-picker { flex: 1; min-width: 120px; max-width: 150px; padding: 0 10px; border: 2px solid #eee; border-radius: 10px; height: 42px; font-weight: 600; background:white; }
         button { padding: 0 14px; height: 42px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0; }
         button:active { transform: scale(0.97); }
-        .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: var(--warning); } .btn-red { background: var(--danger); }
+        .btn-blue { background: var(--accent); } .btn-purple { background: var(--purple); } .btn-gray { background: #95a5a6; } .btn-green { background: var(--success); } .btn-orange { background: var(--warning); } .btn-red { background: var(--danger); } .btn-dark { background: var(--dark); }
         .file-upload-btn { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 5px; }
         .card { background: white; border-radius: 16px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -72,6 +72,17 @@
             .date-picker { flex: 1 1 100%; max-width: none; order: 1; }
             .controls button { flex: 1 1 auto; min-width: 90px; order: 2; justify-content: center; }
         }
+
+        /* DAĞITIM LİSTESİ STİLİ */
+        .dist-row {
+            display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 16px;
+        }
+        .dist-id {
+            background: var(--primary); color: white; font-weight: 900; 
+            width: 40px; height: 40px; border-radius: 50%; display: flex; 
+            justify-content: center; align-items: center; margin-right: 15px; font-size: 18px;
+        }
+        .dist-name { font-weight: 600; color: #2d3436; }
     </style>
 </head>
 <body>
@@ -94,7 +105,7 @@
             <div class="controls">
                 <input type="date" id="simulationDate" class="date-picker">
                 <button class="btn-blue" onclick="nextRotation()">🔄 Dağıt</button>
-                <button class="btn-purple" onclick="runSystemCheck()">🩺 Doktor</button>
+                <button class="btn-dark" onclick="openDistributionMode()">📢 Liste</button> <button class="btn-purple" onclick="runSystemCheck()">🩺 Doktor</button>
                 <button class="btn-gray" onclick="openSettings()">⚙️ Ayar</button>
             </div>
             <div class="card">
@@ -111,7 +122,7 @@
             </div>
             <div id="emptyState" style="display:none; text-align:center; padding: 50px 20px;"><div style="font-size:50px; margin-bottom:15px;">📊</div><h3 style="color:var(--primary); margin:0 0 10px 0;">Sınıf Boş</h3><p style="color:#7f8c8d; font-size:14px; margin-bottom:25px;">Excel'den yükle veya manuel ekle.</p><button class="btn-blue" style="margin:0 auto; padding: 0 25px; height: 50px;" onclick="openSettings()">+ Kurulum Yap</button></div>
             
-            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.5 (Switch Fix)</div>
+            <div style="text-align:center; color:#b2bec3; font-size:11px; margin-top:25px; font-weight:bold;">KitapMatik v1.6 (Hızlı Dağıtım)</div>
         </div>
         <div id="view-report" class="view-section"><input type="text" id="searchInput" class="input-full" placeholder="🔍 Öğrenci veya kitap ara..." onkeyup="filterReport()" style="margin-top:0;"><div class="card"><table><thead><tr><th>Tarih</th><th>Detay</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
         <div id="view-inventory" class="view-section"><h3 style="color:var(--primary); margin:0 0 15px 0; font-size:18px;">📦 Boştaki Kitaplar</h3><div id="freeBooksList"></div></div>
@@ -121,6 +132,15 @@
         <button class="nav-btn active" onclick="switchView('dashboard', this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Ana Ekran</button>
         <button class="nav-btn" onclick="switchView('report', this)"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>Geçmiş</button>
         <button class="nav-btn" onclick="switchView('inventory', this)"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>Envanter</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="distributionModal">
+    <div class="modal" style="height:80vh;">
+        <h2 style="color:var(--primary); border-bottom:2px solid #eee; padding-bottom:10px;">📢 Dağıtım Listesi</h2>
+        <p style="font-size:12px; color:#666;">Kitap numarasına göre sıralanmıştır.</p>
+        <div id="distributionList" style="margin-top:10px;"></div>
+        <button class="btn-gray" style="width:100%; margin-top:20px; padding:15px; background:#b2bec3; color:#2d3436; font-weight:bold;" onclick="closeModals()">KAPAT</button>
     </div>
 </div>
 
@@ -197,45 +217,52 @@
     function saveData() { if (currentClassId && appData) localStorage.setItem('km_data_' + currentClassId, JSON.stringify(appData)); }
     function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active')); btn.classList.add('active'); if(viewId === 'report') renderReport(); if(viewId === 'inventory') renderInventory(); }
     
-    // --- DÜZELTİLEN RENDER FONKSİYONU ---
     function renderTable() {
         const tbody = document.getElementById('tableBody'); const emptyState = document.getElementById('emptyState'); const card = document.querySelector('#view-dashboard .card'); tbody.innerHTML = '';
         if (!appData.students || appData.students.length === 0) { card.style.display = 'none'; emptyState.style.display = 'block'; return; } else { card.style.display = 'block'; emptyState.style.display = 'none'; }
-        
-        let allChecked = true;
-        let hasEligible = false;
-        const d = getSystemDate();
-        
+        let allChecked = true; let hasEligible = false; const d = getSystemDate();
         appData.students.forEach(s => {
-            // allChecked hesabında SADECE cezalı olmayanları dikkate al
-            if(!s.isBanned) {
-                hasEligible = true;
-                if(!s.delivered) allChecked = false;
-            }
-
+            if(!s.isBanned) { hasEligible = true; if(!s.delivered) allChecked = false; }
             const bName = s.bookId ? (appData.books.find(b=>b.id===s.bookId)?.name || 'Bilinmeyen') : 'Kitap Yok';
             const isBan = s.isBanned, isDel = s.delivered;
             let trClass = ''; if (isBan) trClass = 'banned-row'; else if (s.blocked && !isBan && !isDel) trClass = 'blocked-row';
-            
             let btnText = 'Değiş'; let btnColor = 'btn-gray'; let btnAction = `onclick="manualChange(${s.id})"`;
-            if (isBan) {
-                if (s.bookId) { btnText = 'İADE AL'; btnColor = 'btn-orange'; btnAction = `onclick="returnBookOnly(${s.id})"`; } 
-                else { btnText = 'AF ET'; btnColor = 'btn-red'; btnAction = `onclick="liftBan(${s.id})"`; }
-            } else if (isDel) { btnText = 'Değiş'; btnColor = 'btn-blue'; }
-
+            if (isBan) { if (s.bookId) { btnText = 'İADE AL'; btnColor = 'btn-orange'; btnAction = `onclick="returnBookOnly(${s.id})"`; } else { btnText = 'AF ET'; btnColor = 'btn-red'; btnAction = `onclick="liftBan(${s.id})"`; } } else if (isDel) { btnText = 'Değiş'; btnColor = 'btn-blue'; }
             const isToday = s.lastDate === d;
-            let strikeBadge = '';
-            if (s.missCount > 0) strikeBadge = `<span style="font-size:10px; color:${isBan ? '#c0392b' : '#e67e22'}; font-weight:bold; margin-left:4px;">(⚠️ ${s.missCount})</span>`;
-
+            let strikeBadge = ''; if (s.missCount > 0) strikeBadge = `<span style="font-size:10px; color:${isBan ? '#c0392b' : '#e67e22'}; font-weight:bold; margin-left:4px;">(⚠️ ${s.missCount})</span>`;
             const row = `<tr class="${trClass}"><td><div style="font-weight:700; color:var(--primary); font-size:15px;">${s.name} ${strikeBadge}</div><div style="font-size:13px; color:#666; margin-top:4px;">📘 ${s.bookId ? s.bookId+'. '+bName : '-'}</div><div style="font-size:11px; color:#999; margin-top:4px;">📅 ${s.lastDate || '-'} ${isToday ? '<span class="badge-new">YENİ</span>' : ''}</div></td><td style="text-align:center;"><label class="switch"><input type="checkbox" onchange="toggleOne(${s.id},this.checked)" ${isDel?'checked':''}><span class="slider round"></span></label></td><td style="text-align:right;"><button class="${btnColor}" style="padding:0 10px; height:32px; font-size:11px;" ${btnAction}>${btnText}</button></td></tr>`;
             tbody.innerHTML += row;
         });
-
-        if(!hasEligible) allChecked = false; // Hiç sağlam öğrenci yoksa switch kapalı olsun
+        if(!hasEligible) allChecked = false;
         const master = document.getElementById('masterSwitch'); if(master) master.checked = (appData.students.length > 0 && allChecked);
     }
 
-    function returnBookOnly(id) { if(!confirm("Öğrenci cezalı kalacak ama kitabı envantere dönecek. Onaylıyor musun?")) return; const s = appData.students.find(x => x.id === id); if(s) { s.bookId = null; s.delivered = false; saveData(); renderTable(); } }
+    // --- YENİ EKLENEN DAĞITIM LİSTESİ MANTIĞI ---
+    function openDistributionMode() {
+        const listDiv = document.getElementById('distributionList');
+        listDiv.innerHTML = '';
+        
+        // Sadece kitabı olan öğrencileri al, Kitap ID'ye göre sırala (Küçükten Büyüğe)
+        const distList = appData.students
+            .filter(s => s.bookId !== null && s.bookId !== undefined)
+            .sort((a, b) => a.bookId - b.bookId);
+
+        if (distList.length === 0) {
+            listDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Henüz dağıtılmış kitap yok.</div>';
+        } else {
+            distList.forEach(s => {
+                const row = `
+                <div class="dist-row">
+                    <div class="dist-id">#${s.bookId}</div>
+                    <div class="dist-name">${s.name}</div>
+                </div>`;
+                listDiv.innerHTML += row;
+            });
+        }
+        document.getElementById('distributionModal').style.display = 'flex';
+    }
+
+    function returnBookOnly(id) { if(!confirm("Onaylıyor musun?")) return; const s = appData.students.find(x => x.id === id); if(s) { s.bookId = null; s.delivered = false; saveData(); renderTable(); } }
     function liftBan(id) { const s = appData.students.find(x => x.id === id); if(!s) return; let found = null; for(let i=0; i<appData.books.length; i++) { const b = appData.books[i]; const isBusy = appData.students.some(st => st.bookId === b.id); const isRead = s.history ? s.history.some(h => h.bookId === b.id) : false; if(!isBusy && !isRead) { found = b.id; break; } } let msg = "Öğrencinin cezası kaldırılacak."; if(found) msg += `\nSistem otomatik olarak #${found} numaralı kitabı atayacak.`; else msg += "\n⚠️ UYARI: Uygun boş kitap bulunamadı! Kitapsız devam edecek."; if(!confirm(msg)) return; s.isBanned = false; s.missCount = 0; if(found) { const d = getSystemDate(); s.bookId = found; s.delivered = false; s.blocked = false; s.lastDate = d; const b = appData.books.find(x => x.id === found); if(!s.history) s.history = []; s.history.push({ date: d + ' (AF)', book: b ? b.name : '?', bookId: found }); } saveData(); renderTable(); }
     function toggleAll(status) { if(confirm(status ? "Tümü 'TESLİM ETTİ' olsun mu?" : "İşaretler kaldırılsın mı?")) { appData.students.forEach(s => { if (!s.isBanned) { s.delivered = status; if(status) s.blocked = false; }}); saveData(); renderTable(); } else { document.getElementById('masterSwitch').checked = !status; } }
     function toggleOne(id, status) { const s = appData.students.find(x => x.id === id); if(s) { s.delivered = status; if(status) s.blocked = false; saveData(); renderTable(); } }
