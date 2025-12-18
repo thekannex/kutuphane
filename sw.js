@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitapmatik-v1.4-akilli'; // VERSİYON DEĞİŞTİ
+const CACHE_NAME = 'kitapmatik-v1.5-fix';
 const ASSETS = [
   './',
   './index.html',
